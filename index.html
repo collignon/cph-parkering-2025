@@ -43,7 +43,7 @@
 
         .step {
             padding: 60px 40px;
-            margin-bottom: 50vh;
+            margin-bottom: 80vh;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -98,7 +98,7 @@
         /* Header and footer */
         #header {
             padding: 60px 40px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #2c3e50;
             color: white;
             text-align: center;
         }
@@ -136,9 +136,9 @@
         /* Image slides */
         .step.image-slide {
             position: relative;
-            background: none;
-            backdrop-filter: none;
-            box-shadow: none;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             padding: 0;
             margin-bottom: 100vh;
             height: 100vh;
@@ -150,37 +150,25 @@
             justify-content: center;
         }
 
-        .step.image-slide::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            z-index: -1;
-        }
-
         .step.image-slide .content {
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
             padding: 40px;
             border-radius: 8px;
             max-width: 600px;
             text-align: center;
             backdrop-filter: blur(5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .step.image-slide h3 {
-            color: white;
+            color: #2c3e50;
             font-size: 2.2rem;
             margin-bottom: 20px;
         }
 
         .step.image-slide p {
-            color: rgba(255, 255, 255, 0.9);
+            color: #555;
             font-size: 1.1rem;
         }
 
@@ -215,7 +203,6 @@
 <body>
 
 <div id="map"></div>
-<div id="mapInset"></div>
 <div id="story"></div>
 
 <script src="./config.js"></script>
@@ -336,9 +323,15 @@ config.chapters.forEach((record, idx) => {
         if (record.backgroundImage) {
             container.style.backgroundImage = `url('${record.backgroundImage}')`;
         }
+        // Wrap content in a content div for image slides
+        var contentWrapper = document.createElement('div');
+        contentWrapper.className = 'content';
+        contentWrapper.appendChild(chapter);
+        container.appendChild(contentWrapper);
+    } else {
+        container.appendChild(chapter);
     }
     
-    container.appendChild(chapter);
     container.classList.add(alignments[record.alignment] || 'centered');
     if (record.onChapterEnter.length === 0 && record.onChapterExit.length === 0) {
         container.setAttribute('data-scrollama-index', idx);
@@ -382,20 +375,6 @@ var map = new mapboxgl.Map({
     interactive: false,
     transformRequest: transformRequest
 });
-
-// Create a inset map if enabled in config
-if (config.inset) {
-    var insetMap = new mapboxgl.Map({
-        container: 'mapInset', // container id
-        style: 'mapbox://styles/mapbox/dark-v10',
-        center: config.chapters[0].location.center,
-        zoom: 3,
-        hash: false,
-        interactive: false,
-        attributionControl: false,
-        transformRequest: transformRequest
-    });
-}
 
 if (config.showMarkers) {
     var marker = new mapboxgl.Marker({ color: config.markerColor });
@@ -541,18 +520,6 @@ map.on("load", async function() {
             });
         }
 
-        // Inset map
-        if (config.inset) {
-            if (chapter.location.zoom < 5) {
-                insetMap.flyTo({center: chapter.location.center, zoom: 0});
-            }
-            else {
-                insetMap.flyTo({center: chapter.location.center, zoom: 3});
-            }
-        }
-        if (config.showMarkers) {
-            marker.setLngLat(chapter.location.center);
-        }
         if (chapter.rotateAnimation) {
             map.once('moveend', () => {
                 const rotateNumber = map.getBearing();
@@ -562,6 +529,10 @@ map.on("load", async function() {
                     }
                 });
             });
+        }
+
+        if (config.showMarkers) {
+            marker.setLngLat(chapter.location.center);
         }
     })
     .onStepExit(response => {

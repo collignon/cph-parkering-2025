@@ -178,11 +178,11 @@ var config = {
             onChapterExit: []
         },
         {
-            id: 'hvad-tager-parkering',
+            id: 'space-stats',
             alignment: 'center',
             hidden: false,
-            title: 'Hvad tager parkering fra os?',
-            description: 'Forskning viser at biler optager 60-70% af byens offentlige rum, men bruges kun 5% af tiden. I København kunne tomme private parkeringspladser blive til cykelstier, grønne områder, legepladser og caféliv.<br><br>Som byplanlægger Michael Szell påpeger: "Vi har givet bilen alt for meget plads i vores byer."<br><br>Kilder: <a href="http://michael.szell.net/downloads/talk_szell2019rwu.pdf">Szell (2019) - Urban Space Distribution</a>',
+            title: 'Hvad kunne vi få i stedet?',
+            description: 'Hvis vi omdannede bare de tomme private parkeringspladser i København, kunne vi få betydeligt mere byrum til mennesker.',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 12,
@@ -196,10 +196,46 @@ var config = {
             onChapterExit: []
         },
         {
-            id: 'arrogance-of-space-slide',
+            id: 'hvad-tager-parkering',
+            alignment: 'center',
+            hidden: false,
+            title: 'Hvad tager parkering fra os?',
+            description: 'Forskning viser at biler optager 60-70% af byens offentlige rum, men bruges kun 5% af tiden. I København kunne tomme private parkeringspladser blive til cykelstier, grønne områder, legepladser og caféliv.<br><br>Som byplanlægger Michael Szell påpeger: "Vi har givet bilen alt for meget plads i vores byer."<br><br>Kilder: <a href="http://michael.szell.net/downloads/talk_szell2019rwu.pdf">Szell (2019) - Urban Space Distribution</a>',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: []
+        },
+        {
+            id: 'arrogance-intro',
             alignment: 'center',
             hidden: false,
             title: 'The Arrogance of Space',
+            description: 'Bilens dominans af byrum kaldes "The Arrogance of Space" - et begreb der beskriver hvordan biler har overtaget det meste af vores fælles byrum.',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 13,
+                pitch: 15,
+                bearing: 45
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: []
+        },
+        {
+            id: 'arrogance-of-space-slide',
+            alignment: 'center',
+            hidden: false,
+            title: 'Paris Transformation',
             description: 'Dette billede fra Paris viser hvordan "the arrogance of space" kan bekæmpes. Copenhagenize Design Co. har hjulpet over 50 byer med at transformere bilcentrerede gader til menneskecentrerede rum.',
             location: {
                 center: [12.5683, 55.6761],
@@ -216,11 +252,11 @@ var config = {
             backgroundImage: './assets/Paris 1 by Mikael Colville Andersen.jpg'
         },
         {
-            id: 'dansk-paradoks',
+            id: 'dansk-export',
             alignment: 'center',
             hidden: false,
-            title: 'Det danske paradoks',
-            description: 'Vi eksporterer løsninger mod bilernes dominans til hele verden. Men hjemme accepterer vi at 86% af private parkeringspladser står tomme, mens skatteydere betaler 19.000kr årligt per leasede plads.<br><br>Hver parkeringsplads kunne være 20m cykelsti. Hvorfor fører vi ikke an med markedsbaserede parkeringsløsninger?',
+            title: 'Danmarks urbane eksport',
+            description: 'Danmark eksporterer løsninger mod bilernes dominans til hele verden. Danske byplanlæggere og designere har hjulpet hundredvis af byer med at skabe mere plads til mennesker.',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 12,
@@ -229,7 +265,25 @@ var config = {
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
-            callback: 'showParadoxSlide',
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: []
+        },
+        {
+            id: 'dansk-paradoks',
+            alignment: 'center',
+            hidden: false,
+            title: 'Det danske paradoks',
+            description: 'Men hjemme i Danmark accepterer vi at 86% af private parkeringspladser står tomme, mens skatteydere betaler 19.000kr årligt per leasede plads. Hver parkeringsplads kunne være 20m cykelsti. Hvorfor fører vi ikke an med markedsbaserede parkeringsløsninger?',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: 'showDanishUrbanism',
             onChapterEnter: [],
             onChapterExit: []
         },
