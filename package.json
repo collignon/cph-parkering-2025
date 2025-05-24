@@ -1,0 +1,32 @@
+{
+  "name": "cph-parkering-visual-essay",
+  "version": "1.0.0",
+  "description": "Interactive visual essay about private parking in Copenhagen",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "npx http-server -p 8000",
+    "dev": "npx http-server -p 8000 -o"
+  },
+  "keywords": [
+    "copenhagen",
+    "parking",
+    "visual-essay",
+    "scrollytelling",
+    "mapbox",
+    "data-visualization"
+  ],
+  "author": "Nico",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/cph-parkering-2025.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/cph-parkering-2025/issues"
+  },
+  "homepage": "https://github.com/your-username/cph-parkering-2025#readme"
+} 
