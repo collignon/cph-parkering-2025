@@ -167,6 +167,92 @@ class OverpassAPI {
         
         return description;
     }
+
+    addRealisticOccupancy(feature) {
+        // Add realistic occupancy data based on Copenhagen 2018 report
+        const properties = feature.properties || {};
+        
+        // Estimate capacity if not provided
+        if (!properties.capacity) {
+            properties.capacity = this.estimateCapacity(properties);
+        }
+        
+        // Generate realistic low occupancy (14% average from 2018 report)
+        const occupancyRate = this.generateOccupancy(properties.access, properties.fee);
+        properties.occupancy = Math.round(properties.capacity * occupancyRate);
+        
+        // Add other missing properties
+        if (!properties.name) {
+            properties.name = 'Parkeringsplads';
+        }
+        
+        if (!properties.address) {
+            properties.address = this.generateAddress(feature.geometry.coordinates, properties);
+        }
+        
+        if (!properties.price_per_hour) {
+            properties.price_per_hour = this.estimatePrice(feature.geometry.coordinates, properties.access, properties.operator);
+        }
+        
+        if (!properties.description) {
+            properties.description = this.generateDescription(properties, properties.access, properties.operator);
+        }
+    }
+
+    getFallbackData() {
+        // Return sample data if the GeoJSON file fails to load
+        console.log('Using fallback parking data');
+        return {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Vesterbro Parkeringshus",
+                        "address": "Vesterbrogade 123",
+                        "capacity": 200,
+                        "occupancy": 28,
+                        "price_per_hour": 25,
+                        "description": "Stort parkeringshus med lav belægning"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [12.5434, 55.6736]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Nørrebro Parking",
+                        "address": "Nørrebrogade 456",
+                        "capacity": 150,
+                        "occupancy": 21,
+                        "price_per_hour": 22,
+                        "description": "Underjordisk parkering med mange ledige pladser"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [12.5515, 55.6938]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Østerbro Center Parking",
+                        "address": "Østerbrogade 789",
+                        "capacity": 180,
+                        "occupancy": 25,
+                        "price_per_hour": 28,
+                        "description": "Moderne parkeringsfacilitet"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [12.5886, 55.7058]
+                    }
+                }
+            ]
+        };
+    }
 }
 
 // Initialize the Overpass API handler
