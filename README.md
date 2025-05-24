@@ -2,6 +2,12 @@
 
 En interaktiv visuel artikel om private parkeringspladser i København, bygget med Mapbox Storytelling framework og baseret på forskning af Michael Szell om byrumsfordeling og Mikael Colville-Andersen's arbejde med "the arrogance of space".
 
+## 🚀 Live Demo
+
+**[Se den live visual essay her](https://YOUR_USERNAME.github.io/cph-parkering-2025/)**
+
+_Erstatt YOUR_USERNAME med dit GitHub brugernavn efter upload_
+
 ## Funktioner
 
 - **Scrollytelling**: Interaktiv fortælling der kombinerer tekst, billeder og kort
