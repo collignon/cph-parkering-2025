@@ -165,11 +165,11 @@ var config = {
         },
         {
             id: 'gehl-revolution',
-            alignment: 'left',
+            alignment: 'center',
             hidden: false,
             title: 'Jan Gehl revolutionerede byplanlægning',
             image: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=800&h=600&fit=crop',
-            description: 'I 1960\'erne startede Jan Gehl en revolution fra København. Hans forskning i hvordan mennesker bruger byrum ændrede byplanlægning globalt.<br><br>Fra Strøget - verdens første gågade - til Times Square i New York. Gehls principper om "cities for people" bruges nu i hundredvis af byer verden over.<br><br>Resultatet: Mere liv, mindre biler, bedre byer.',
+            description: 'I 1960\'erne startede Jan Gehl en revolution fra København. Hans forskning i hvordan mennesker bruger byrum ændrede byplanlægning globalt.<br><br>Fra Strøget - verdens første gågade - til Times Square i New York. Gehls principper om "cities for people" bruges nu i hundredvis af byer verden over.<br><br><strong>Resultatet: Mere liv, mindre biler, bedre byer.</strong>',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 14,
@@ -180,15 +180,17 @@ var config = {
             rotateAnimation: false,
             callback: '',
             onChapterEnter: [],
-            onChapterExit: []
+            onChapterExit: [],
+            isFullscreenSlide: true,
+            backgroundImage: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=1920&h=1080&fit=crop'
         },
         {
             id: 'copenhagenize',
-            alignment: 'right',
+            alignment: 'center',
             hidden: false,
-            title: 'Mikael Colville-Andersen og "The Arrogance of Space"',
-            image: 'https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800&h=600&fit=crop',
-            description: 'Copenhagenize Design Co. har hjulpet over 50 byer med at bekæmpe "the arrogance of space" - bilens dominans af byerne.<br><br>Fra Paris\' cykelrevolution til New Yorks protected bike lanes. Danske principper har skabt mere plads til mennesker i byer verden over.<br><br>Men hjemme i København står 86% af private parkeringspladser tomme...',
+            title: 'The Arrogance of Space',
+            image: './assets/Paris 1 by Mikael Colville Andersen.jpg',
+            description: 'Copenhagenize Design Co. har hjulpet over 50 byer med at bekæmpe "the arrogance of space" - bilens dominans af byerne.<br><br>Fra Paris\' cykelrevolution til New Yorks protected bike lanes. Danske principper har skabt mere plads til mennesker i byer verden over.<br><br><strong>Dette billede fra Paris viser hvordan "the arrogance of space" kan bekæmpes.</strong>',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 13,
@@ -199,7 +201,9 @@ var config = {
             rotateAnimation: false,
             callback: '',
             onChapterEnter: [],
-            onChapterExit: []
+            onChapterExit: [],
+            isFullscreenSlide: true,
+            backgroundImage: './assets/Paris 1 by Mikael Colville Andersen.jpg'
         },
         {
             id: 'dansk-paradoks',
@@ -216,9 +220,11 @@ var config = {
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
-            callback: 'showSpaceComparison',
+            callback: 'showParadoxSlide',
             onChapterEnter: [],
-            onChapterExit: []
+            onChapterExit: [],
+            isFullscreenSlide: true,
+            backgroundImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop'
         },
         {
             id: 'løsning',

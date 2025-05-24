@@ -6,19 +6,23 @@ class OverpassAPI {
 
     async fetchParkingData() {
         try {
-            console.log('Loading parking data from local GeoJSON file...');
-            const response = await fetch(this.dataFile);
-            
+            // For now, use the pre-saved data
+            const response = await fetch('./assets/overpass-cph-parking.geojson');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const geoJsonData = await response.json();
-            return this.enhanceGeoJSONData(geoJsonData);
+            const data = await response.json();
+            
+            // Add realistic occupancy data to each feature
+            data.features.forEach(feature => {
+                this.addRealisticOccupancy(feature);
+            });
+            
+            return data;
         } catch (error) {
-            console.error('Error loading local parking data:', error);
-            // Fallback to sample data if file fails to load
-            return parkingData;
+            console.error('Error fetching parking data:', error);
+            // Fallback to sample data if fetch fails
+            return this.getFallbackData();
         }
     }
 

@@ -555,6 +555,70 @@
                 align-items: center;
             }
         }
+
+        /* Full-screen slide chapters */
+        .step.fullscreen-slide {
+            position: relative;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step.fullscreen-slide div {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 2rem;
+            max-width: 800px;
+            color: white;
+            text-align: center;
+        }
+
+        .step.fullscreen-slide h3 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .step.fullscreen-slide p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.3rem;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .step.fullscreen-slide img {
+            display: none; /* Hide the regular image since we're using background */
+        }
+
+        /* Remove the old fullscreen-slide styles that weren't working */
+        .fullscreen-slide {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .step.fullscreen-slide h3 {
+                font-size: 2rem;
+            }
+            
+            .step.fullscreen-slide p {
+                font-size: 1.1rem;
+            }
+            
+            .step.fullscreen-slide div {
+                padding: 2rem;
+                margin: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -569,6 +633,7 @@
 <script src="./space-comparison.js"></script>
 <script src="./impact-stats.js"></script>
 <script src="./danish-urbanism.js"></script>
+<script src="./fullscreen-slides.js"></script>
 <script src="./contribution.js"></script>
 <script>
 var layerTypes = {
@@ -680,6 +745,18 @@ config.chapters.forEach((record, idx) => {
     if (record.hidden) {
         container.classList.add('hidden');
     }
+    
+    // Add fullscreen-slide class and background for specific chapters
+    if (record.isFullscreenSlide) {
+        container.classList.add('fullscreen-slide');
+        if (record.backgroundImage) {
+            container.style.backgroundImage = `url(${record.backgroundImage})`;
+        }
+        if (record.backgroundColor) {
+            container.style.backgroundColor = record.backgroundColor;
+        }
+    }
+    
     container.appendChild(chapter);
     container.classList.add(alignments[record.alignment] || 'centered');
     if (record.onChapterEnter.length === 0 && record.onChapterExit.length === 0) {
@@ -857,9 +934,23 @@ map.on("load", async function() {
         progress: true
     })
     .onStepEnter(async response => {
-        var chapter = config.chapters.find(chap => chap.id === response.element.id);
+        const chapter = config.chapters.find(chap => chap.id === response.element.id);
         response.element.classList.add('active');
         map[chapter.mapAnimation || 'flyTo'](chapter.location);
+
+        // Handle callback function
+        if (chapter.callback && typeof window[chapter.callback] === 'function') {
+            window[chapter.callback]();
+        }
+
+        // Handle onChapterEnter
+        if (chapter.onChapterEnter.length > 0) {
+            chapter.onChapterEnter.forEach(callback => {
+                if (typeof window[callback] === 'function') {
+                    window[callback]();
+                }
+            });
+        }
 
         // Inset map
         if (config.inset) {
@@ -873,12 +964,6 @@ map.on("load", async function() {
         if (config.showMarkers) {
             marker.setLngLat(chapter.location.center);
         }
-        if (chapter.onChapterEnter.length > 0) {
-            chapter.onChapterEnter.forEach(setLayerOpacity);
-        }
-        if (chapter.callback) {
-            window[chapter.callback]();
-        }
         if (chapter.rotateAnimation) {
             map.once('moveend', () => {
                 const rotateNumber = map.getBearing();
@@ -891,10 +976,16 @@ map.on("load", async function() {
         }
     })
     .onStepExit(response => {
-        var chapter = config.chapters.find(chap => chap.id === response.element.id);
         response.element.classList.remove('active');
-        if (chapter.onChapterExit.length > 0) {
-            chapter.onChapterExit.forEach(setLayerOpacity);
+        
+        // Handle onChapterExit callbacks
+        const chapter = config.chapters.find(chap => chap.id === response.element.id);
+        if (chapter && chapter.onChapterExit && chapter.onChapterExit.length > 0) {
+            chapter.onChapterExit.forEach(callback => {
+                if (typeof window[callback] === 'function') {
+                    window[callback]();
+                }
+            });
         }
     });
 });
@@ -912,7 +1003,7 @@ function showSpaceComparison() {
         const comparisonHTML = spaceComparison.createComparisonHTML(visualization);
         
         // Find the current chapter and add the comparison
-        const currentChapter = document.querySelector('#hvad-tager-parkering .step-content');
+        const currentChapter = document.querySelector('#hvad-tager-parkering div');
         if (currentChapter && !currentChapter.querySelector('.space-comparison')) {
             currentChapter.insertAdjacentHTML('beforeend', comparisonHTML);
         }
