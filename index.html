@@ -61,7 +61,7 @@
         }
 
         /* Extra spacing for key transition chapters */
-        #aktuel-belægning.step,
+        #aktuel-belægning-intro.step,
         #space-stats.step,
         #hvad-tager-parkering.step {
             margin-bottom: 120vh;
@@ -699,6 +699,31 @@
                 min-width: 200px;
             }
         }
+
+        /* Solid background chapters */
+        .step.solid-background {
+            position: relative;
+            background: none !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+        }
+
+        .step.solid-background::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Hide map during solid background */
+        body.solid-background-active #map {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
     </style>
 </head>
 <body>
@@ -817,6 +842,12 @@ config.chapters.forEach((record, idx) => {
     container.classList.add('step');
     if (record.hidden) {
         container.classList.add('hidden');
+    }
+    
+    // Add solid background class if specified
+    if (record.solidBackground) {
+        container.classList.add('solid-background');
+        container.style.setProperty('--solid-bg-color', record.solidBackground);
     }
     
     // Check if this is part of a sticky graphic sequence
@@ -1030,6 +1061,16 @@ map.on("load", async function() {
     .onStepEnter(async response => {
         const chapter = config.chapters.find(chap => chap.id === response.element.id);
         response.element.classList.add('active');
+        
+        // Handle solid background
+        if (chapter.solidBackground) {
+            document.body.classList.add('solid-background-active');
+            document.body.style.setProperty('--solid-bg-color', chapter.solidBackground);
+            document.body.style.backgroundColor = chapter.solidBackground;
+        } else {
+            document.body.classList.remove('solid-background-active');
+            document.body.style.backgroundColor = '';
+        }
         
         // Check if we're in the arrogance sticky graphic sequence
         const isArroganceSequence = chapter.stickyGraphic && 

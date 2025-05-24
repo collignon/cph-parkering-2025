@@ -160,11 +160,11 @@ var config = {
             onChapterExit: []
         },
         {
-            id: 'aktuel-belægning',
+            id: 'aktuel-belægning-intro',
             alignment: 'center',
             hidden: false,
             title: 'Aktuel belægning: Kun 14%',
-            description: 'Husker du de 2.100 parkeringspladser som kommunen lejer fra private anlæg for 19.000 kr per plads om året?<br><br>En opgørelse fra d. 7. maj i år viser noget chokerende: <strong>Af de første 1.000 lejede pladser bruger borgerne kun 14% af dem.</strong><br><br>Det betyder at <strong>86% af de pladser vi betaler for står tomme</strong> - mens kommunen samtidig vil bruge endnu flere skattemidler på at leje flere pladser.<br><br>Hvad koster denne ineffektivitet samfundet?<br><br>Kilde: <a href="https://www.kk.dk/sites/default/files/2025-05/07.05.25%20-%20Orienteringsnotat%20om%20Benyttelsen%20af%20de%20lejede%20parkeringspladser%20i%20private%20anl%C3%A6g.pdf">Orienteringsnotat om benyttelsen</a>',
+            description: 'Husker du de 2.100 parkeringspladser som kommunen lejer fra private anlæg for 19.000 kr per plads om året?<br><br>En opgørelse fra d. 7. maj i år viser noget chokerende: <strong>Af de første 1.000 lejede pladser bruger borgerne kun 14% af dem.</strong>',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 11,
@@ -173,9 +173,48 @@ var config = {
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
-            callback: 'showParkingVisualization',
+            callback: '',
             onChapterEnter: [],
-            onChapterExit: []
+            onChapterExit: [],
+            solidBackground: '#2c3e50'
+        },
+        {
+            id: 'parking-visualization',
+            alignment: 'center',
+            hidden: false,
+            title: '',
+            description: '',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 11,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: 'showScrollParkingVisualization',
+            onChapterEnter: [],
+            onChapterExit: [],
+            solidBackground: '#2c3e50'
+        },
+        {
+            id: 'aktuel-belægning-conclusion',
+            alignment: 'center',
+            hidden: false,
+            title: '',
+            description: 'Det betyder at <strong>86% af de pladser vi betaler for står tomme</strong> - mens kommunen samtidig vil bruge endnu flere skattemidler på at leje flere pladser.<br><br>Hvad koster denne ineffektivitet samfundet?<br><br>Kilde: <a href="https://www.kk.dk/sites/default/files/2025-05/07.05.25%20-%20Orienteringsnotat%20om%20Benyttelsen%20af%20de%20lejede%20parkeringspladser%20i%20private%20anl%C3%A6g.pdf">Orienteringsnotat om benyttelsen</a>',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 11,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: ['cleanupScrollParkingVisualization'],
+            solidBackground: '#2c3e50'
         },
         {
             id: 'space-stats',
