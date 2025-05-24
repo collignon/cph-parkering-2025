@@ -160,11 +160,7 @@ Projektet bruger `overpass-cph-parking.geojson` filen. For at opdatere data:
 
 ## Fremtidige forbedringer
 
-- [ ] Integration med real-time belægningsdata
-- [ ] Bedre geocoding af bruger-bidrag
-- [ ] SEO optimering
 - [ ] Flere visualiseringer af byrumsfordeling
-- [ ] Integration med andre danske byer
 
 ## Licens
 

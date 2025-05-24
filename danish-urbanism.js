@@ -32,7 +32,7 @@ class DanishUrbanism {
                 </div>
                 
                 <div class="paradox-highlight">
-                    <h4>🚗 Men hjemme i København...</h4>
+                    <h4>Men hjemme i København...</h4>
                     <div class="paradox-stats">
                         <span class="bad-stat">86% tomme private pladser</span>
                         <span class="bad-stat">19.000kr/plads i skattekroner</span>
