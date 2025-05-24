@@ -211,11 +211,12 @@ function showParkingVisualization() {
 
 // Scroll-driven D3 Parking Occupancy Visualization
 const scrollParkingVisualization = {
+    currentViz: null,
+    isInitialized: false,
+    
     createVisualization() {
-        const container = d3.select('#parking-visualization div');
-        
         // Remove any existing visualization
-        container.select('.scroll-parking-viz').remove();
+        this.cleanup();
         
         // Create full-screen visualization container
         const vizContainer = d3.select('body').append('div')
@@ -249,7 +250,6 @@ const scrollParkingVisualization = {
         const spotSize = Math.min(width / 22, height / 22); // 20 spots + spacing
         const spacing = spotSize * 0.2;
         const gridSize = 20;
-        const totalSpots = 400; // 20x20 = 400 spots
         
         const svg = vizContainer.append('svg')
             .attr('width', width)
@@ -274,7 +274,8 @@ const scrollParkingVisualization = {
                     y: startY + row * (spotSize + spacing),
                     occupied: spotIndex < 56, // 14% of 400 = 56 spots
                     row: row,
-                    col: col
+                    col: col,
+                    waveDelay: (row + col) // For wave animation
                 });
             }
         }
@@ -308,118 +309,165 @@ const scrollParkingVisualization = {
         const occupiedCounter = statsContainer.append('div')
             .style('text-align', 'center');
         
+        occupiedCounter.append('div')
+            .attr('class', 'occupied-number')
+            .style('font-size', '3rem')
+            .style('font-weight', 'bold')
+            .style('color', '#e74c3c')
+            .style('margin-bottom', '10px')
+            .text('0');
+            
+        occupiedCounter.append('div')
+            .style('font-size', '1rem')
+            .style('color', '#ecf0f1')
+            .text('Optaget (14%)');
+        
         const emptyCounter = statsContainer.append('div')
             .style('text-align', 'center');
+        
+        emptyCounter.append('div')
+            .attr('class', 'empty-number')
+            .style('font-size', '3rem')
+            .style('font-weight', 'bold')
+            .style('color', '#95a5a6')
+            .style('margin-bottom', '10px')
+            .text('0');
+            
+        emptyCounter.append('div')
+            .style('font-size', '1rem')
+            .style('color', '#ecf0f1')
+            .text('Tomme (86%)');
         
         const costCounter = statsContainer.append('div')
             .style('text-align', 'center');
         
-        // Store for cleanup
-        this.currentViz = vizContainer;
+        costCounter.append('div')
+            .style('font-size', '2.5rem')
+            .style('font-weight', 'bold')
+            .style('color', '#f39c12')
+            .style('margin-bottom', '10px')
+            .style('opacity', '0')
+            .text('16,3 mio kr');
+            
+        costCounter.append('div')
+            .style('font-size', '1rem')
+            .style('color', '#ecf0f1')
+            .style('opacity', '0')
+            .text('Spildt årligt');
         
-        // Start animation sequence
-        this.animateSequence(title, spots, occupiedCounter, emptyCounter, costCounter);
+        // Store references
+        this.currentViz = vizContainer;
+        this.elements = {
+            title,
+            spots,
+            statsContainer,
+            occupiedNumber: occupiedCounter.select('.occupied-number'),
+            emptyNumber: emptyCounter.select('.empty-number'),
+            costAmount: costCounter.select('div:first-child'),
+            costLabel: costCounter.select('div:last-child')
+        };
+        
+        this.spotsData = spotsData;
+        this.isInitialized = true;
+        
+        // Set up scroll listener
+        this.setupScrollListener();
     },
     
-    animateSequence(title, spots, occupiedCounter, emptyCounter, costCounter) {
-        // Step 1: Show title
-        title.transition()
-            .duration(1000)
-            .style('opacity', '1');
+    setupScrollListener() {
+        if (this.scrollListener) {
+            window.removeEventListener('scroll', this.scrollListener);
+        }
         
-        // Step 2: Show all spots appearing in waves
-        setTimeout(() => {
-            spots.transition()
-                .duration(2000)
-                .delay((d, i) => (d.row + d.col) * 30)
-                .style('opacity', 1);
-        }, 1000);
+        this.scrollListener = () => {
+            const vizChapter = document.getElementById('parking-visualization');
+            if (!vizChapter || !this.isInitialized) return;
+            
+            const rect = vizChapter.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            // Calculate scroll progress through the visualization chapter
+            // Progress goes from 0 to 1 as we scroll through the chapter
+            const progress = Math.max(0, Math.min(1, 
+                (windowHeight - rect.top) / (windowHeight + rect.height)
+            ));
+            
+            this.updateVisualization(progress);
+        };
         
-        // Step 3: Highlight occupied spots (red)
-        setTimeout(() => {
+        window.addEventListener('scroll', this.scrollListener);
+    },
+    
+    updateVisualization(progress) {
+        if (!this.elements || !this.spotsData) return;
+        
+        const { title, spots, statsContainer, occupiedNumber, emptyNumber, costAmount, costLabel } = this.elements;
+        
+        // Phase 1: Show title (0-0.15)
+        if (progress > 0.05) {
+            title.style('opacity', Math.min(1, (progress - 0.05) / 0.1));
+        }
+        
+        // Phase 2: Show spots appearing in waves (0.15-0.5)
+        if (progress > 0.15) {
+            const spotProgress = Math.min(1, (progress - 0.15) / 0.35);
+            const maxDelay = Math.max(...this.spotsData.map(d => d.waveDelay));
+            
+            spots.style('opacity', d => {
+                const normalizedDelay = d.waveDelay / maxDelay;
+                return spotProgress > normalizedDelay ? 1 : 0;
+            });
+        }
+        
+        // Phase 3: Color occupied spots red (0.5-0.65)
+        if (progress > 0.5) {
+            const colorProgress = Math.min(1, (progress - 0.5) / 0.15);
+            
             spots.filter(d => d.occupied)
-                .transition()
-                .duration(1000)
-                .style('fill', '#e74c3c');
+                .style('fill', d3.interpolateRgb('#34495e', '#e74c3c')(colorProgress));
             
-            // Animate occupied counter
-            occupiedCounter.append('div')
-                .style('font-size', '3rem')
-                .style('font-weight', 'bold')
-                .style('color', '#e74c3c')
-                .style('margin-bottom', '10px')
-                .text('0')
-                .transition()
-                .duration(1000)
-                .tween('text', function() {
-                    const i = d3.interpolate(0, 56);
-                    return function(t) {
-                        this.textContent = Math.round(i(t));
-                    };
-                });
-                
-            occupiedCounter.append('div')
-                .style('font-size', '1rem')
-                .style('color', '#ecf0f1')
-                .text('Optaget (14%)');
-        }, 3000);
+            // Show occupied counter
+            const occupiedCount = Math.round(56 * colorProgress);
+            occupiedNumber.text(occupiedCount);
+        }
         
-        // Step 4: Show empty spots (gray)
-        setTimeout(() => {
+        // Phase 4: Color empty spots gray and show stats (0.65-0.8)
+        if (progress > 0.65) {
+            const emptyProgress = Math.min(1, (progress - 0.65) / 0.15);
+            
             spots.filter(d => !d.occupied)
-                .transition()
-                .duration(1500)
-                .style('fill', '#95a5a6');
+                .style('fill', d3.interpolateRgb('#34495e', '#95a5a6')(emptyProgress));
             
-            // Animate empty counter
-            emptyCounter.append('div')
-                .style('font-size', '3rem')
-                .style('font-weight', 'bold')
-                .style('color', '#95a5a6')
-                .style('margin-bottom', '10px')
-                .text('0')
-                .transition()
-                .duration(1500)
-                .tween('text', function() {
-                    const i = d3.interpolate(0, 344);
-                    return function(t) {
-                        this.textContent = Math.round(i(t));
-                    };
-                });
-                
-            emptyCounter.append('div')
-                .style('font-size', '1rem')
-                .style('color', '#ecf0f1')
-                .text('Tomme (86%)');
-        }, 4500);
-        
-        // Step 5: Show cost implications
-        setTimeout(() => {
-            costCounter.append('div')
-                .style('font-size', '2.5rem')
-                .style('font-weight', 'bold')
-                .style('color', '#f39c12')
-                .style('margin-bottom', '10px')
-                .text('16,3 mio kr');
-                
-            costCounter.append('div')
-                .style('font-size', '1rem')
-                .style('color', '#ecf0f1')
-                .text('Spildt årligt');
+            // Show empty counter
+            const emptyCount = Math.round(344 * emptyProgress);
+            emptyNumber.text(emptyCount);
             
             // Show stats container
-            d3.select('.scroll-parking-viz div:last-child')
-                .transition()
-                .duration(1000)
-                .style('opacity', '1');
-        }, 6000);
+            statsContainer.style('opacity', emptyProgress);
+        }
+        
+        // Phase 5: Show cost implications (0.8-1.0)
+        if (progress > 0.8) {
+            const costProgress = Math.min(1, (progress - 0.8) / 0.2);
+            costAmount.style('opacity', costProgress);
+            costLabel.style('opacity', costProgress);
+        }
     },
     
     cleanup() {
+        if (this.scrollListener) {
+            window.removeEventListener('scroll', this.scrollListener);
+            this.scrollListener = null;
+        }
+        
         if (this.currentViz) {
             this.currentViz.remove();
             this.currentViz = null;
         }
+        
+        this.elements = null;
+        this.spotsData = null;
+        this.isInitialized = false;
     }
 };
 
