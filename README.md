@@ -4,9 +4,9 @@ En interaktiv visuel artikel om private parkeringspladser i København, bygget m
 
 ## 🚀 Live Demo
 
-**[Se den live visual essay her](https://YOUR_USERNAME.github.io/cph-parkering-2025/)**
+**[Se den live visual essay her](https://collignon.github.io/cph-parkering-2025/)**
 
-_Erstatt YOUR_USERNAME med dit GitHub brugernavn efter upload_
+_Nu live på GitHub Pages_
 
 ## Funktioner
 
