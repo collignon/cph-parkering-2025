@@ -173,7 +173,7 @@ var config = {
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
-            callback: 'showImpactStats',
+            callback: 'showParkingVisualization',
             onChapterEnter: [],
             onChapterExit: []
         },

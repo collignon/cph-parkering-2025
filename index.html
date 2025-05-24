@@ -7,6 +7,7 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
     <script src="https://unpkg.com/scrollama"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -705,14 +706,15 @@
 <div id="map"></div>
 <div id="story"></div>
 
-<script src="./config.js"></script>
-<script src="./parking-data.js"></script>
-<script src="./overpass-query.js"></script>
-<script src="./space-comparison.js"></script>
-<script src="./impact-stats.js"></script>
-<script src="./danish-urbanism.js"></script>
-<script src="./fullscreen-slides.js"></script>
-<script src="./contribution.js"></script>
+<script src="overpass-query.js"></script>
+<script src="parking-data.js"></script>
+<script src="space-comparison.js"></script>
+<script src="impact-stats.js"></script>
+<script src="parking-visualization.js"></script>
+<script src="danish-urbanism.js"></script>
+<script src="fullscreen-slides.js"></script>
+<script src="contribution.js"></script>
+<script src="config.js"></script>
 <script>
 var layerTypes = {
     'fill': ['fill-opacity'],
