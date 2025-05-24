@@ -825,6 +825,8 @@ if (config.showMarkers) {
 var scroller = scrollama();
 
 map.on("load", async function() {
+    console.log('Map loaded successfully');
+    
     if (config.use3dTerrain) {
         map.addSource('mapbox-dem', {
             'type': 'raster-dem',
@@ -846,45 +848,51 @@ map.on("load", async function() {
 
     // Fetch real parking data from Overpass API
     console.log('Fetching real parking data from OpenStreetMap...');
-    const realParkingData = await overpassAPI.fetchParkingData();
-    console.log(`Loaded ${realParkingData.features.length} parking locations`);
+    try {
+        const realParkingData = await overpassAPI.fetchParkingData();
+        console.log(`Loaded ${realParkingData.features.length} parking locations`);
 
-    // Store globally for space comparison
-    globalParkingData = realParkingData;
+        // Store globally for space comparison
+        globalParkingData = realParkingData;
 
-    // Add parking data source with real data
-    map.addSource('parking-spots', {
-        'type': 'geojson',
-        'data': realParkingData
-    });
+        // Add parking data source with real data
+        map.addSource('parking-spots', {
+            'type': 'geojson',
+            'data': realParkingData
+        });
+        console.log('Added parking data source to map');
 
-    // Add parking spots layer
-    map.addLayer({
-        'id': 'parking-spots-layer',
-        'type': 'circle',
-        'source': 'parking-spots',
-        'paint': {
-            'circle-radius': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                10, 4,
-                15, 8,
-                20, 16
-            ],
-            'circle-color': [
-                'interpolate',
-                ['linear'],
-                ['/', ['get', 'occupancy'], ['get', 'capacity']],
-                0, '#00ff00',    // Green for empty
-                0.5, '#ffff00',  // Yellow for half full
-                1, '#ff0000'     // Red for full
-            ],
-            'circle-stroke-width': 2,
-            'circle-stroke-color': '#ffffff',
-            'circle-opacity': 0.8
-        }
-    });
+        // Add parking spots layer
+        map.addLayer({
+            'id': 'parking-spots-layer',
+            'type': 'circle',
+            'source': 'parking-spots',
+            'paint': {
+                'circle-radius': [
+                    'interpolate',
+                    ['linear'],
+                    ['zoom'],
+                    10, 4,
+                    15, 8,
+                    20, 16
+                ],
+                'circle-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['/', ['get', 'occupancy'], ['get', 'capacity']],
+                    0, '#00ff00',    // Green for empty
+                    0.5, '#ffff00',  // Yellow for half full
+                    1, '#ff0000'     // Red for full
+                ],
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff',
+                'circle-opacity': 0.8
+            }
+        });
+        console.log('Added parking spots layer to map');
+    } catch (error) {
+        console.error('Error loading parking data:', error);
+    }
 
     // Add click event for parking spots
     map.on('click', 'parking-spots-layer', (e) => {
