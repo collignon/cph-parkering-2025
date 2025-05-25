@@ -6,107 +6,151 @@ class SpaceComparison {
                 type: 'bike_lanes',
                 title: 'Cykelstier',
                 description: 'En parkeringsplads = 20 meter cykelsti',
-                multiplier: 20,
                 icon: '🚴‍♀️',
-                color: '#00ff00'
+                color: '#00cc66'
             },
             {
                 type: 'trees',
                 title: 'Træer',
                 description: 'En parkeringsplads = 2-3 store træer',
-                multiplier: 2.5,
                 icon: '🌳',
-                color: '#228B22'
+                color: '#3cb371'
             },
             {
                 type: 'outdoor_seating',
                 title: 'Udendørs spisepladser',
                 description: 'En parkeringsplads = 8-12 cafépladser',
-                multiplier: 10,
                 icon: '☕',
-                color: '#8B4513'
+                color: '#d2a679'
             },
             {
                 type: 'playground',
                 title: 'Legeplads',
                 description: 'En parkeringsplads = 15m² legeplads',
-                multiplier: 15,
                 icon: '🛝',
-                color: '#FF6B6B'
+                color: '#ff7f50'
             },
             {
                 type: 'green_space',
                 title: 'Grønt område',
                 description: 'En parkeringsplads = 15m² park',
-                multiplier: 15,
                 icon: '🌱',
-                color: '#90EE90'
+                color: '#98fb98'
             }
         ];
+        this.containerWrapperClass = 'space-alternatives-wrapper'; // Class for the dynamically added wrapper
     }
 
-    calculateAlternatives(totalParkingSpaces) {
-        return this.alternatives.map(alt => ({
-            ...alt,
-            total: Math.round(totalParkingSpaces * alt.multiplier),
-            impact: this.getImpactDescription(alt.type, totalParkingSpaces * alt.multiplier)
-        }));
+    // Returns the data, not HTML
+    getAlternativesData() {
+        return this.alternatives;
     }
 
-    getImpactDescription(type, amount) {
-        switch(type) {
-            case 'bike_lanes':
-                const km = (amount / 1000).toFixed(1);
-                return `${km} km nye cykelstier - nok til at forbinde hele København`;
-            case 'trees':
-                return `${Math.round(amount)} træer - absorberer ${Math.round(amount * 22)} kg CO2 årligt`;
-            case 'outdoor_seating':
-                return `${Math.round(amount)} cafépladser - plads til ${Math.round(amount * 4)} mennesker`;
-            case 'playground':
-                return `${Math.round(amount)}m² legeplads - plads til ${Math.round(amount / 5)} børn`;
-            case 'green_space':
-                return `${Math.round(amount)}m² grønt område - ${(amount / 10000).toFixed(1)} hektar ny park`;
-            default:
-                return '';
+    // Ensures the main container for alternatives exists within the host chapter element
+    // and populates it with the initial structure of all alternatives (de-emphasized).
+    initDisplay(hostChapterElementId) {
+        const hostChapterElement = document.getElementById(hostChapterElementId);
+        if (!hostChapterElement) {
+            console.error(`Host chapter element '${hostChapterElementId}' not found.`);
+            return;
+        }
+
+        // Remove existing wrapper if any, to ensure clean state
+        let existingWrapper = hostChapterElement.querySelector('.' + this.containerWrapperClass);
+        if (existingWrapper) {
+            existingWrapper.remove();
+        }
+
+        const wrapper = document.createElement('div');
+        wrapper.className = this.containerWrapperClass;
+
+        const alternativesData = this.getAlternativesData();
+        let alternativesHTML = '<div class="alternatives-grid">'; // Start grid
+
+        alternativesData.forEach(alt => {
+            alternativesHTML += `
+                <div class="alternative-item scrolly-alternative" id="alternative-${alt.type}" style="border-left: 5px solid ${alt.color}; opacity: 0.25; transition: opacity 0.5s ease-in-out, transform 0.3s ease-in-out;">
+                    <div class="alt-icon">${alt.icon}</div>
+                    <div class="alt-content">
+                        <h4>${alt.title}</h4>
+                        <p class="alt-description">${alt.description}</p>
+                    </div>
+                </div>
+            `;
+        });
+        alternativesHTML += '</div>'; // End grid
+        alternativesHTML += `
+            <div class="szell-reference" style="opacity: 0.5; transition: opacity 0.5s ease-in-out;">
+                 <p><em>Baseret på principper fra Michael Szell om byrumsfordeling</em></p>
+            </div>`;
+
+        wrapper.innerHTML = alternativesHTML;
+
+        // Append the new wrapper to the host chapter element
+        // This attempts to place it after any existing H3 or P tags (title/description of the chapter)
+        const existingMainContent = hostChapterElement.querySelector('h3, p');
+        if (existingMainContent && existingMainContent.parentNode === hostChapterElement) {
+            // If h3/p are direct children, find the div that usually wraps them.
+            // The general structure from index.html is: <div id="chapter-id" class="step"><div (for title/desc)>...</div></div>
+            // So we find the first div child.
+            const contentDiv = hostChapterElement.querySelector('div');
+            if (contentDiv) {
+                 contentDiv.appendChild(wrapper);
+            } else {
+                 hostChapterElement.appendChild(wrapper); // Fallback
+            }
+        } else {
+            hostChapterElement.appendChild(wrapper); // Fallback if no clear title/desc structure found
         }
     }
 
-    generateVisualization(parkingData) {
-        const totalSpaces = parkingData.features.reduce((sum, feature) => 
-            sum + (feature.properties.capacity || 0), 0);
+    // Highlights a specific alternative and de-emphasizes others.
+    highlightAlternative(type) {
+        const wrapper = document.querySelector('.' + this.containerWrapperClass);
+        if (!wrapper) return;
+
+        const allItems = wrapper.querySelectorAll('.scrolly-alternative');
+        allItems.forEach(item => {
+            item.style.opacity = '0.25';
+            item.style.transform = 'scale(1)';
+            item.classList.remove('active-alternative');
+        });
+
+        const targetItem = wrapper.querySelector(`#alternative-${type}`);
+        if (targetItem) {
+            targetItem.style.opacity = '1';
+            targetItem.style.transform = 'scale(1.03)';
+             targetItem.classList.add('active-alternative');
+        }
         
-        const alternatives = this.calculateAlternatives(totalSpaces);
-        
-        return {
-            totalSpaces,
-            alternatives,
-            summary: `${totalSpaces} private parkeringspladser kunne blive til:`
-        };
+        // Also make Szell reference fully visible when any alternative is highlighted
+        const szellRef = wrapper.querySelector('.szell-reference');
+        if (szellRef) {
+            szellRef.style.opacity = '1';
+        }
     }
 
-    createComparisonHTML(visualization) {
-        return `
-            <div class="space-comparison">
-                <h3>Hvad kunne vi få i stedet?</h3>
-                <p class="total-spaces">${visualization.summary}</p>
-                <div class="alternatives-grid">
-                    ${visualization.alternatives.map(alt => `
-                        <div class="alternative-item" style="border-left: 4px solid ${alt.color}">
-                            <div class="alt-icon">${alt.icon}</div>
-                            <div class="alt-content">
-                                <h4>${alt.title}</h4>
-                                <p class="alt-impact">${alt.impact}</p>
-                                <small class="alt-description">${alt.description}</small>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="szell-reference">
-                    <p><em>Baseret på forskning af Michael Szell om byrumsfordeling</em></p>
-                </div>
-            </div>
-        `;
+    // Clears the alternatives display.
+    clearDisplay() {
+        const wrapper = document.querySelector('.' + this.containerWrapperClass);
+        if (wrapper) {
+            wrapper.innerHTML = ''; // Or wrapper.remove(); if the wrapper itself should go
+        }
     }
 }
 
-const spaceComparison = new SpaceComparison(); 
+const spaceComparison = new SpaceComparison();
+
+// Global functions to be called from config.js
+// Pass the ID of the chapter that will host the alternatives display.
+function initializeSpaceAlternativesDisplay(hostChapterId) {
+    spaceComparison.initDisplay(hostChapterId);
+}
+
+function highlightSpaceAlternative(type) {
+    spaceComparison.highlightAlternative(type);
+}
+
+function clearSpaceAlternativesDisplay() {
+    spaceComparison.clearDisplay();
+} 

@@ -344,74 +344,201 @@
 
         /* Space comparison visualization */
         .space-comparison {
-            margin: 30px 0;
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
+            margin: 40px auto; /* Centered with more vertical margin */
+            padding: 30px;
+            background: #ffffff; /* Brighter background */
+            border-radius: 12px; /* Softer radius */
+            border: 1px solid #dee2e6; /* Lighter border */
+            max-width: 700px; /* Control max width for better readability */
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08); /* Softer shadow */
         }
 
         .space-comparison h3 {
             color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.6rem;
+            margin-bottom: 20px; /* Increased space */
+            font-size: 1.8rem; /* Slightly larger */
+            text-align: center;
         }
 
         .total-spaces {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            color: #555;
+            font-size: 1.15rem; /* Slightly larger */
+            margin-bottom: 25px;
+            color: #495057; /* Softer dark color */
             font-weight: 500;
+            text-align: center;
         }
 
         .alternatives-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+            gap: 20px; /* Increased gap */
+            margin-bottom: 25px;
         }
 
         .alternative-item {
             display: flex;
-            align-items: center;
-            padding: 15px;
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            align-items: flex-start; /* Align items to the top */
+            padding: 20px;
+            background: #f8f9fa; /* Light background for items */
+            border-radius: 8px;
+            /* border-left: 5px solid var(--alt-color, #3498db); Remove inline style dependency */
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .alternative-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .alt-icon {
-            font-size: 2rem;
-            margin-right: 15px;
+            font-size: 2.2rem; /* Slightly larger icon */
+            margin-right: 18px;
             flex-shrink: 0;
+            margin-top: 3px; /* Align icon better with text */
+            width: 40px; /* Give icon a fixed width for alignment */
+            text-align: center;
         }
 
         .alt-content h4 {
-            margin: 0 0 5px 0;
+            margin: 0 0 8px 0;
             color: #2c3e50;
-            font-size: 1.1rem;
+            font-size: 1.2rem; /* Slightly larger title */
+            line-height: 1.3;
         }
 
         .alt-impact {
-            margin: 0 0 5px 0;
-            color: #27ae60;
+            margin: 0 0 8px 0;
+            color: #17a2b8; /* Changed color for impact text, e.g. Bootstrap's info color */
             font-weight: 500;
+            font-size: 1rem;
+            line-height: 1.4;
         }
 
         .alt-description {
             color: #6c757d;
             font-style: italic;
+            font-size: 0.85rem; /* Smaller for de-emphasis */
+            line-height: 1.3;
         }
 
         .szell-reference {
-            padding-top: 15px;
+            padding-top: 20px;
             border-top: 1px solid #e9ecef;
             text-align: center;
+            margin-top: 10px;
         }
 
         .szell-reference em {
             color: #6c757d;
             font-size: 0.9rem;
+        }
+
+        /* Mobile responsive adjustments for space comparison */
+        @media (max-width: 768px) {
+            .space-comparison {
+                margin: 30px 15px; /* Adjust margin for smaller screens */
+                padding: 20px;
+            }
+            .alternatives-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                gap: 15px;
+            }
+            .alternative-item {
+                padding: 15px;
+            }
+            .alt-icon {
+                font-size: 2rem;
+                margin-right: 15px;
+            }
+            .alt-content h4 {
+                font-size: 1.1rem;
+            }
+            .alt-impact {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Styles for the new scrollytelling space alternatives */
+        .space-alternatives-wrapper {
+            /* This wrapper will be dynamically added. 
+               It can inherit styles from .space-comparison or have its own */
+            margin: 20px auto; /* Adjust as needed */
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9); /* Slight transparency if desired over a chapter background */
+            border-radius: 10px;
+            max-width: 700px; /* Consistent with previous .space-comparison */
+        }
+
+        .space-alternatives-wrapper .alternatives-grid {
+            /* Styles for the grid within the new wrapper */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .space-alternatives-wrapper .alternative-item {
+            /* Styles for individual items within the new wrapper */
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: #f0f0f0; /* Slightly different background for items */
+            border-radius: 8px;
+            /* border-left is set inline by JS */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            /* transition for opacity/transform is set inline by JS */
+        }
+        
+        /* Additional style for active/highlighted alternative if needed beyond JS inline styles */
+        .space-alternatives-wrapper .alternative-item.active-alternative {
+            /* Example: a more prominent shadow or border */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .space-alternatives-wrapper .alt-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            width: 35px;
+            text-align: center;
+        }
+
+        .space-alternatives-wrapper .alt-content h4 {
+            margin: 0 0 6px 0;
+            color: #2c3e50;
+            font-size: 1.15rem;
+        }
+
+        .space-alternatives-wrapper .alt-description {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .space-alternatives-wrapper .szell-reference {
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .space-alternatives-wrapper .szell-reference em {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive for the new wrapper */
+        @media (max-width: 768px) {
+            .space-alternatives-wrapper {
+                margin: 20px 10px;
+                padding: 15px;
+            }
+            .space-alternatives-wrapper .alternatives-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
         }
 
         /* Impact statistics */
@@ -725,495 +852,661 @@
             opacity: 0;
             transition: opacity 0.5s ease;
         }
+
+        /* Custom styles for dark background chapters */
+        #aktuel-belægning-intro.step,
+        #parking-visualization.step, /* In case it ever gets direct text content */
+        #aktuel-belægning-conclusion.step {
+            color: white; /* Default text color for these chapters */
+        }
+
+        #aktuel-belægning-intro.step h3,
+        #parking-visualization.step h3,
+        #aktuel-belægning-conclusion.step h3 {
+            color: white !important; /* Ensure title is white */
+            font-size: 2rem; /* Make title a bit larger */
+        }
+
+        #aktuel-belægning-intro.step p,
+        #parking-visualization.step p,
+        #aktuel-belægning-conclusion.step p {
+            color: #f0f0f0 !important; /* Slightly off-white for paragraph for softer contrast */
+            font-size: 1.1rem; /* Make paragraph text a bit larger */
+        }
+        
+        #aktuel-belægning-intro.step a,
+        #parking-visualization.step a,
+        #aktuel-belægning-conclusion.step a {
+            color: #7fdbff !important; /* Light blue for links, good on dark backgrounds */
+        }
+
+        /* Add more bottom padding to the intro text chapter before the visualization */
+        #aktuel-belægning-intro.step {
+            padding-bottom: 120px; /* Increased from default 60px */
+        }
+
+        /* Adjustments for the visualization placeholder chapter if needed */
+        #parking-visualization.step {
+            min-height: 100vh; /* Ensure it takes up some scroll space even if empty of its own content */
+            /* margin-bottom: 120vh; is already set, which is good */
+        }
+
+        /* Add more bottom margin to the conclusion chapter to push subsequent content down */
+        #aktuel-belægning-conclusion.step {
+            margin-bottom: 150vh; /* Increased from default 80vh to push space-stats down */
+        }
+
+        /* Style for the text content of aktuel-belægning-conclusion */
+        #aktuel-belægning-conclusion .mapboxgl-scroll-overlay-content {
+            background-color: rgba(44, 62, 80, 0.85); /* Semi-transparent dark blue, matches header */
+            padding: 2em; /* Increased padding */
+            border-radius: 8px;
+            color: white; /* Ensuring text is white for readability */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25); /* A bit more pronounced shadow */
+        }
+        
+        /* Ensure links within this styled box are also visible */
+        #aktuel-belægning-conclusion .mapboxgl-scroll-overlay-content a {
+            color: #7ec6ff; /* Lighter blue for links on dark background */
+        }
+
+        /* New styles for side-by-side image and text */
+        .side-by-side-layout {
+            display: flex;
+            align-items: flex-start; /* Align items to the top */
+            gap: 20px; /* Space between image and text */
+        }
+
+        .side-by-side-layout .image-column {
+            flex: 0 0 40%; /* Image takes up 40% of the width, does not grow or shrink */
+            max-width: 40%;
+        }
+
+        .side-by-side-layout .image-column img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .side-by-side-layout .text-column {
+            flex: 1; /* Text takes up the remaining space */
+            max-width: calc(60% - 20px); /* Adjust for gap */
+        }
+
+        /* Adjustments for centered chapters with side-by-side layout */
+        .step.centered .side-by-side-layout {
+            max-width: 900px; /* Or a value that you prefer for the overall width */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .step.centered {
+            max-width: 1000px; /* Increase max-width for centered steps that use this layout */
+        }
+
+        /* Custom spacing for specific chapters */
+        #transformation-intro.step,
+        #transformation-hidalgo.step {
+            margin-bottom: 120vh; /* More scroll space between these Paris chapters */
+        }
+
+        #transformation-results.step {
+            margin-bottom: 150vh; /* More scroll space after the Paris sequence */
+        }
     </style>
 </head>
 <body>
+    <div id="sticky-paris-image-container" style="display: none; position: fixed; right: 5%; /* Changed from left */ top: 20vh; width: 40%; max-width: 500px; z-index: 10;">
+        <img src="./assets/Paris is Looking Great.webp" alt="Paris Transformation" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+    </div>
+    <div id="map"></div>
+    <div id="story"></div>
 
-<div id="map"></div>
-<div id="story"></div>
-
-<script src="overpass-query.js"></script>
-<script src="parking-data.js"></script>
-<script src="space-comparison.js"></script>
-<script src="impact-stats.js"></script>
-<script src="parking-visualization.js"></script>
-<script src="danish-urbanism.js"></script>
-<script src="fullscreen-slides.js"></script>
-<script src="contribution.js"></script>
-<script src="config.js"></script>
-<script>
-var layerTypes = {
-    'fill': ['fill-opacity'],
-    'line': ['line-opacity'],
-    'circle': ['circle-opacity', 'circle-stroke-opacity'],
-    'symbol': ['icon-opacity', 'text-opacity'],
-    'raster': ['raster-opacity'],
-    'fill-extrusion': ['fill-extrusion-opacity'],
-    'heatmap': ['heatmap-opacity']
-}
-
-var alignments = {
-    'left': 'lefty',
-    'center': 'centered',
-    'right': 'righty',
-    'full': 'fully'
-}
-
-function getLayerPaintType(layer) {
-    var layerType = map.getLayer(layer).type;
-    return layerTypes[layerType];
-}
-
-function setLayerOpacity(layer) {
-    var paintProps = getLayerPaintType(layer.layer);
-    paintProps.forEach(function(prop) {
-        var options = {};
-        if (layer.duration) {
-            var transitionProp = prop + "-transition";
-            options = { "duration": layer.duration };
-            map.setPaintProperty(layer.layer, transitionProp, options);
-        }
-        map.setPaintProperty(layer.layer, prop, layer.opacity, options);
-    });
-}
-
-var story = document.getElementById('story');
-var features = document.createElement('div');
-features.setAttribute('id', 'features');
-
-var header = document.createElement('div');
-
-if (config.title) {
-    var titleText = document.createElement('h1');
-    titleText.innerText = config.title;
-    header.appendChild(titleText);
-}
-
-if (config.subtitle) {
-    var subtitleText = document.createElement('h2');
-    subtitleText.innerText = config.subtitle;
-    header.appendChild(subtitleText);
-}
-
-if (config.byline) {
-    var bylineText = document.createElement('p');
-    bylineText.innerText = config.byline;
-    header.appendChild(bylineText);
-}
-
-if (header.innerText.length > 0) {
-    header.classList.add(config.theme);
-    header.setAttribute('id', 'header');
-    story.appendChild(header);
-}
-
-config.chapters.forEach((record, idx) => {
-    var container = document.createElement('div');
-    var chapter = document.createElement('div');
-    
-    if (record.title) {
-        var title = document.createElement('h3');
-        title.innerText = record.title;
-        chapter.appendChild(title);
+    <script src="overpass-query.js"></script>
+    <script src="parking-data.js"></script>
+    <script src="space-comparison.js"></script>
+    <script src="impact-stats.js"></script>
+    <script src="parking-visualization.js"></script>
+    <script src="danish-urbanism.js"></script>
+    <script src="fullscreen-slides.js"></script>
+    <script src="contribution.js"></script>
+    <script src="config.js"></script>
+    <script>
+    var layerTypes = {
+        'fill': ['fill-opacity'],
+        'line': ['line-opacity'],
+        'circle': ['circle-opacity', 'circle-stroke-opacity'],
+        'symbol': ['icon-opacity', 'text-opacity'],
+        'raster': ['raster-opacity'],
+        'fill-extrusion': ['fill-extrusion-opacity'],
+        'heatmap': ['heatmap-opacity']
     }
-    
-    if (record.description) {
-        var story = document.createElement('p');
-        story.innerHTML = record.description;
-        chapter.appendChild(story);
+
+    var alignments = {
+        'left': 'lefty',
+        'center': 'centered',
+        'right': 'righty',
+        'full': 'fully'
     }
-    
-    // Add contribution form for the last chapter
-    if (idx === config.chapters.length - 1) {
-        var form = document.createElement('div');
-        form.className = 'contribution-form';
-        form.innerHTML = `
-            <h4>Bidrag til kortet</h4>
-            <p>Hjælp os med at kortlægge private parkeringspladser i København:</p>
-            <input type="text" id="location-name" placeholder="Navn på parkeringsplads">
-            <input type="text" id="location-address" placeholder="Adresse">
-            <textarea id="location-description" placeholder="Beskrivelse (pris, åbningstider, etc.)"></textarea>
-            <input type="file" id="location-photo" accept="image/*">
-            <button onclick="submitContribution()">Tilføj til kort</button>
-        `;
-        chapter.appendChild(form);
+
+    function getLayerPaintType(layer) {
+        var layerType = map.getLayer(layer).type;
+        return layerTypes[layerType];
     }
-    
-    container.setAttribute('id', record.id);
-    container.classList.add('step');
-    if (record.hidden) {
-        container.classList.add('hidden');
-    }
-    
-    // Add solid background class if specified
-    if (record.solidBackground) {
-        container.classList.add('solid-background');
-        container.style.setProperty('--solid-bg-color', record.solidBackground);
-    }
-    
-    // Check if this is part of a sticky graphic sequence
-    var isStickySequence = record.stickyGraphic && 
-        (record.id === 'arrogance-intro' || record.id === 'arrogance-colors' || record.id === 'arrogance-reality' ||
-         record.id === 'transformation-intro' || record.id === 'transformation-hidalgo' || record.id === 'transformation-results');
-    
-    // Add image-slide class and background for image slides
-    if (record.isImageSlide) {
-        container.classList.add('image-slide');
-        if (record.backgroundImage) {
-            container.style.backgroundImage = `url('${record.backgroundImage}')`;
-        }
-        // Wrap content in a content div for image slides
-        var contentWrapper = document.createElement('div');
-        contentWrapper.className = 'content';
-        contentWrapper.appendChild(chapter);
-        container.appendChild(contentWrapper);
-    } else if (record.stickyGraphic) {
-        // Handle sticky graphic pattern
-        container.classList.add('sticky-graphic');
-        if (record.backgroundImage) {
-            container.style.backgroundImage = `url('${record.backgroundImage}')`;
-            container.style.backgroundSize = 'cover';
-            container.style.backgroundPosition = 'center';
-            container.style.backgroundAttachment = 'fixed';
-        }
-        // Wrap content in a content div for sticky graphics
-        var contentWrapper = document.createElement('div');
-        contentWrapper.className = 'content';
-        contentWrapper.appendChild(chapter);
-        container.appendChild(contentWrapper);
-        
-        // Add sticky sequence class for sticky chapters
-        if (isStickySequence) {
-            container.classList.add('sticky-sequence-step');
-        }
-    } else {
-        container.appendChild(chapter);
-    }
-    
-    container.classList.add(alignments[record.alignment] || 'centered');
-    if (record.onChapterEnter.length === 0 && record.onChapterExit.length === 0) {
-        container.setAttribute('data-scrollama-index', idx);
-    }
-    features.appendChild(container);
-});
 
-story.appendChild(features);
-
-var footer = document.createElement('div');
-
-if (config.footer) {
-    var footerText = document.createElement('p');
-    footerText.innerHTML = config.footer;
-    footer.appendChild(footerText);
-}
-
-if (footer.innerText.length > 0) {
-    footer.classList.add(config.theme);
-    footer.setAttribute('id', 'footer');
-    story.appendChild(footer);
-}
-
-mapboxgl.accessToken = config.accessToken;
-
-const transformRequest = (url) => {
-    const hasQuery = url.indexOf("?") !== -1;
-    const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
-    return {
-        url: url + suffix
-    }
-}
-
-var map = new mapboxgl.Map({
-    container: 'map',
-    style: config.style,
-    center: config.chapters[0].location.center,
-    zoom: config.chapters[0].location.zoom,
-    bearing: config.chapters[0].location.bearing,
-    pitch: config.chapters[0].location.pitch,
-    interactive: false,
-    transformRequest: transformRequest
-});
-
-if (config.showMarkers) {
-    var marker = new mapboxgl.Marker({ color: config.markerColor });
-    marker.setLngLat(config.chapters[0].location.center).addTo(map);
-}
-
-// instantiate the scrollama
-var scroller = scrollama();
-
-map.on("load", async function() {
-    console.log('Map loaded successfully');
-    
-    if (config.use3dTerrain) {
-        map.addSource('mapbox-dem', {
-            'type': 'raster-dem',
-            'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
-            'tileSize': 512,
-            'maxzoom': 14
-        });
-        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
-        map.addLayer({
-            'id': 'sky',
-            'type': 'sky',
-            'paint': {
-                'sky-type': 'atmosphere',
-                'sky-atmosphere-sun': [0.0, 0.0],
-                'sky-atmosphere-sun-intensity': 15
+    function setLayerOpacity(layer) {
+        var paintProps = getLayerPaintType(layer.layer);
+        paintProps.forEach(function(prop) {
+            var options = {};
+            if (layer.duration) {
+                var transitionProp = prop + "-transition";
+                options = { "duration": layer.duration };
+                map.setPaintProperty(layer.layer, transitionProp, options);
             }
+            map.setPaintProperty(layer.layer, prop, layer.opacity, options);
         });
     }
 
-    // Fetch real parking data from Overpass API
-    console.log('Fetching real parking data from OpenStreetMap...');
-    try {
-        const realParkingData = await overpassAPI.fetchParkingData();
-        console.log(`Loaded ${realParkingData.features.length} parking locations`);
+    var story = document.getElementById('story');
+    var features = document.createElement('div');
+    features.setAttribute('id', 'features');
 
-        // Store globally for space comparison
-        globalParkingData = realParkingData;
+    var header = document.createElement('div');
 
-        // Add parking data source with real data
-        map.addSource('parking-spots', {
-            'type': 'geojson',
-            'data': realParkingData
-        });
-        console.log('Added parking data source to map');
-
-        // Add parking spots layer
-        map.addLayer({
-            'id': 'parking-spots-layer',
-            'type': 'circle',
-            'source': 'parking-spots',
-            'paint': {
-                'circle-radius': [
-                    'interpolate',
-                    ['linear'],
-                    ['zoom'],
-                    10, 4,
-                    15, 8,
-                    20, 16
-                ],
-                'circle-color': [
-                    'interpolate',
-                    ['linear'],
-                    ['/', ['get', 'occupancy'], ['get', 'capacity']],
-                    0, '#00ff00',    // Green for empty
-                    0.5, '#ffff00',  // Yellow for half full
-                    1, '#ff0000'     // Red for full
-                ],
-                'circle-stroke-width': 2,
-                'circle-stroke-color': '#ffffff',
-                'circle-opacity': 0.8
-            }
-        });
-        console.log('Added parking spots layer to map');
-    } catch (error) {
-        console.error('Error loading parking data:', error);
+    if (config.title) {
+        var titleText = document.createElement('h1');
+        titleText.innerText = config.title;
+        header.appendChild(titleText);
     }
 
-    // Add click event for parking spots
-    map.on('click', 'parking-spots-layer', (e) => {
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const properties = e.features[0].properties;
-        const occupancyRate = Math.round((properties.occupancy / properties.capacity) * 100);
+    if (config.subtitle) {
+        var subtitleText = document.createElement('h2');
+        subtitleText.innerText = config.subtitle;
+        header.appendChild(subtitleText);
+    }
+
+    if (config.byline) {
+        var bylineText = document.createElement('p');
+        bylineText.innerText = config.byline;
+        header.appendChild(bylineText);
+    }
+
+    if (header.innerText.length > 0) {
+        header.classList.add(config.theme);
+        header.setAttribute('id', 'header');
+        story.appendChild(header);
+    }
+
+    config.chapters.forEach((record, idx) => {
+        var container = document.createElement('div');
+        var chapter = document.createElement('div');
         
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        if (record.title) {
+            var title = document.createElement('h3');
+            title.innerText = record.title;
+            chapter.appendChild(title);
         }
         
-        new mapboxgl.Popup()
-            .setLngLat(coordinates)
-            .setHTML(`
-                <div style="padding: 10px;">
-                    <h3 style="margin: 0 0 10px 0; color: #333;">${properties.name}</h3>
-                    <p style="margin: 5px 0;"><strong>Adresse:</strong> ${properties.address}</p>
-                    <p style="margin: 5px 0;"><strong>Kapacitet:</strong> ${properties.capacity} pladser</p>
-                    <p style="margin: 5px 0;"><strong>Belægning:</strong> ${properties.occupancy}/${properties.capacity} (${occupancyRate}%)</p>
-                    <p style="margin: 5px 0;"><strong>Pris:</strong> ${properties.price_per_hour} kr/time</p>
-                    <p style="margin: 5px 0; font-style: italic;">${properties.description}</p>
-                    <div style="margin-top: 10px; padding: 5px; background: ${occupancyRate < 30 ? '#d4edda' : occupancyRate < 70 ? '#fff3cd' : '#f8d7da'}; border-radius: 3px;">
-                        <strong>${occupancyRate < 30 ? '✅ Mange ledige pladser' : occupancyRate < 70 ? '⚠️ Nogle ledige pladser' : '❌ Næsten fuldt'}</strong>
-                    </div>
-                </div>
-            `)
-            .addTo(map);
-    });
-
-    // Change cursor on hover
-    map.on('mouseenter', 'parking-spots-layer', () => {
-        map.getCanvas().style.cursor = 'pointer';
-    });
-
-    map.on('mouseleave', 'parking-spots-layer', () => {
-        map.getCanvas().style.cursor = '';
-    });
-
-    // Load user contributions
-    contributionManager.loadContributionsToMap();
-
-    // setup the instance, pass callback functions
-    scroller
-    .setup({
-        step: '.step',
-        offset: 0.5,
-        progress: true
-    })
-    .onStepEnter(async response => {
-        const chapter = config.chapters.find(chap => chap.id === response.element.id);
-        response.element.classList.add('active');
+        if (record.description) {
+            var story = document.createElement('p');
+            story.innerHTML = record.description;
+            chapter.appendChild(story);
+        }
         
-        // Handle solid background
-        if (chapter.solidBackground) {
-            document.body.classList.add('solid-background-active');
-            document.body.style.setProperty('--solid-bg-color', chapter.solidBackground);
-            document.body.style.backgroundColor = chapter.solidBackground;
+        // Add contribution form for the last chapter
+        if (idx === config.chapters.length - 1) {
+            var form = document.createElement('div');
+            form.className = 'contribution-form';
+            form.innerHTML = `
+                <h4>Bidrag til kortet</h4>
+                <p>Hjælp os med at kortlægge private parkeringspladser i København:</p>
+                <input type="text" id="location-name" placeholder="Navn på parkeringsplads">
+                <input type="text" id="location-address" placeholder="Adresse">
+                <textarea id="location-description" placeholder="Beskrivelse (pris, åbningstider, etc.)"></textarea>
+                <input type="file" id="location-photo" accept="image/*">
+                <button onclick="submitContribution()">Tilføj til kort</button>
+            `;
+            chapter.appendChild(form);
+        }
+        
+        container.setAttribute('id', record.id);
+        container.classList.add('step');
+        if (record.hidden) {
+            container.classList.add('hidden');
+        }
+        
+        // Add solid background class if specified
+        if (record.solidBackground) {
+            container.classList.add('solid-background');
+            container.style.setProperty('--solid-bg-color', record.solidBackground);
+        }
+        
+        // Check if this is part of a sticky graphic sequence
+        var isStickySequence = record.stickyGraphic && 
+            (record.id === 'arrogance-intro' || record.id === 'arrogance-colors' || record.id === 'arrogance-reality' ||
+             record.id === 'transformation-intro' || record.id === 'transformation-hidalgo' || record.id === 'transformation-results');
+        
+        // Add image-slide class and background for image slides
+        if (record.isImageSlide) {
+            container.classList.add('image-slide');
+            if (record.backgroundImage) {
+                container.style.backgroundImage = `url('${record.backgroundImage}')`;
+            }
+            // Wrap content in a content div for image slides
+            var contentWrapper = document.createElement('div');
+            contentWrapper.className = 'content';
+            contentWrapper.appendChild(chapter);
+            container.appendChild(contentWrapper);
+        } else if (record.stickyGraphic) {
+            // Handle sticky graphic pattern
+            container.classList.add('sticky-graphic');
+            if (record.backgroundImage) {
+                container.style.backgroundImage = `url('${record.backgroundImage}')`;
+                container.style.backgroundSize = 'cover';
+                container.style.backgroundPosition = 'center';
+                container.style.backgroundAttachment = 'fixed';
+            }
+            // Wrap content in a content div for sticky graphics
+            var contentWrapper = document.createElement('div');
+            contentWrapper.className = 'content';
+            contentWrapper.appendChild(chapter);
+            container.appendChild(contentWrapper);
+            
+            // Add sticky sequence class for sticky chapters
+            if (isStickySequence) {
+                container.classList.add('sticky-sequence-step');
+            }
         } else {
-            document.body.classList.remove('solid-background-active');
-            document.body.style.backgroundColor = '';
+            container.appendChild(chapter);
         }
         
-        // Check if we're in the arrogance sticky graphic sequence
-        const isArroganceSequence = chapter.stickyGraphic && 
-            (chapter.id === 'arrogance-intro' || chapter.id === 'arrogance-colors' || chapter.id === 'arrogance-reality');
-        
-        // Check if we're in the transformation sticky graphic sequence  
-        const isTransformationSequence = chapter.stickyGraphic && 
-            (chapter.id === 'transformation-intro' || chapter.id === 'transformation-hidalgo' || chapter.id === 'transformation-results');
-        
-        // Handle arrogance sequence
-        if (isArroganceSequence) {
-            document.body.classList.add('sticky-sequence-active', 'arrogance-sequence');
-            document.body.classList.remove('transformation-sequence');
-            
-            // Only animate the map on the first step of the sequence
-            if (chapter.id === 'arrogance-intro') {
-                map[chapter.mapAnimation || 'flyTo'](chapter.location);
-            }
+        container.classList.add(alignments[record.alignment] || 'centered');
+        if (record.onChapterEnter.length === 0 && record.onChapterExit.length === 0) {
+            container.setAttribute('data-scrollama-index', idx);
         }
-        // Handle transformation sequence
-        else if (isTransformationSequence) {
-            document.body.classList.add('sticky-sequence-active', 'transformation-sequence');
-            document.body.classList.remove('arrogance-sequence');
-            
-            // Only animate the map on the first step of the sequence
-            if (chapter.id === 'transformation-intro') {
-                map[chapter.mapAnimation || 'flyTo'](chapter.location);
-            }
-        }
-        // Handle normal steps
-        else {
-            document.body.classList.remove('sticky-sequence-active', 'arrogance-sequence', 'transformation-sequence');
-            // Normal map animation for non-sticky steps
-            map[chapter.mapAnimation || 'flyTo'](chapter.location);
-        }
+        features.appendChild(container);
+    });
 
-        // Handle callback function
-        if (chapter.callback && typeof window[chapter.callback] === 'function') {
-            window[chapter.callback]();
-        }
+    story.appendChild(features);
 
-        // Handle onChapterEnter
-        if (chapter.onChapterEnter.length > 0) {
-            chapter.onChapterEnter.forEach(callback => {
-                if (typeof window[callback] === 'function') {
-                    window[callback]();
+    var footer = document.createElement('div');
+
+    if (config.footer) {
+        var footerText = document.createElement('p');
+        footerText.innerHTML = config.footer;
+        footer.appendChild(footerText);
+    }
+
+    if (footer.innerText.length > 0) {
+        footer.classList.add(config.theme);
+        footer.setAttribute('id', 'footer');
+        story.appendChild(footer);
+    }
+
+    mapboxgl.accessToken = config.accessToken;
+
+    const transformRequest = (url) => {
+        const hasQuery = url.indexOf("?") !== -1;
+        const suffix = hasQuery ? "&pluginName=scrollytellingV2" : "?pluginName=scrollytellingV2";
+        return {
+            url: url + suffix
+        }
+    }
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: config.style,
+        center: config.chapters[0].location.center,
+        zoom: config.chapters[0].location.zoom,
+        pitch: config.chapters[0].location.pitch,
+        bearing: config.chapters[0].location.bearing,
+        accessToken: config.accessToken,
+        projection: 'mercator'
+    });
+
+    if (config.showMarkers) {
+        var marker = new mapboxgl.Marker({ color: config.markerColor });
+        marker.setLngLat(config.chapters[0].location.center).addTo(map);
+    }
+
+    // Function to show the sticky Paris image
+    function showParisStickyImage() {
+        document.getElementById('sticky-paris-image-container').style.display = 'block';
+        document.getElementById('map').style.opacity = '0'; // Hide map during this sequence
+
+        const chapterIds = ['transformation-intro', 'transformation-hidalgo', 'transformation-results'];
+        chapterIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                // Text on the left, image on the right (image is 40vw wide, right: 5vw)
+                el.style.marginLeft = '5vw'; // Use the lefty class margin or set explicitly
+                el.style.marginRight = 'auto'; // Ensure it doesn't try to go to the right
+                el.style.maxWidth = 'calc(100vw - 40vw - 5vw - 5vw - 2vw - 40px)'; // vp width - img width - img right margin - text left margin - gap - text padding
+            }
+        });
+    }
+
+    // Function to hide the sticky Paris image
+    function hideParisStickyImage() {
+        document.getElementById('sticky-paris-image-container').style.display = 'none';
+        document.getElementById('map').style.opacity = '1'; // Show map again
+
+        const chapterIds = ['transformation-intro', 'transformation-hidalgo', 'transformation-results'];
+        chapterIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.marginLeft = ''; // Reset margin to allow class-based alignment to take over
+                el.style.marginRight = '';
+                el.style.maxWidth = '';   // Reset max-width
+            }
+        });
+        map.resize();
+    }
+
+    // instantiate the scrollama
+    var scroller = scrollama();
+
+    map.on("load", async function() {
+        console.log('Map loaded successfully');
+        
+        if (config.use3dTerrain) {
+            map.addSource('mapbox-dem', {
+                'type': 'raster-dem',
+                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                'tileSize': 512,
+                'maxzoom': 14
+            });
+            map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+            map.addLayer({
+                'id': 'sky',
+                'type': 'sky',
+                'paint': {
+                    'sky-type': 'atmosphere',
+                    'sky-atmosphere-sun': [0.0, 0.0],
+                    'sky-atmosphere-sun-intensity': 15
                 }
             });
         }
 
-        if (chapter.rotateAnimation) {
-            map.once('moveend', () => {
-                const rotateNumber = map.getBearing();
-                map.rotateTo(rotateNumber + 180, {
-                    duration: 30000, easing: function (t) {
-                        return t;
+        // Fetch real parking data from Overpass API
+        console.log('Fetching real parking data from OpenStreetMap...');
+        try {
+            const realParkingData = await overpassAPI.fetchParkingData();
+            console.log(`Loaded ${realParkingData.features.length} parking locations`);
+
+            // Store globally for space comparison
+            globalParkingData = realParkingData;
+
+            // Add parking data source with real data
+            map.addSource('parking-spots', {
+                'type': 'geojson',
+                'data': realParkingData
+            });
+            console.log('Added parking data source to map');
+
+            // Add parking spots layer
+            map.addLayer({
+                'id': 'parking-spots-layer',
+                'type': 'circle',
+                'source': 'parking-spots',
+                'paint': {
+                    'circle-radius': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        10, 4,
+                        15, 8,
+                        20, 16
+                    ],
+                    'circle-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['/', ['get', 'occupancy'], ['get', 'capacity']],
+                        0, '#00ff00',    // Green for empty
+                        0.5, '#ffff00',  // Yellow for half full
+                        1, '#ff0000'     // Red for full
+                    ],
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-opacity': 0.8
+                }
+            });
+            console.log('Added parking spots layer to map');
+        } catch (error) {
+            console.error('Error loading parking data:', error);
+        }
+
+        // Add click event for parking spots
+        map.on('click', 'parking-spots-layer', (e) => {
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const properties = e.features[0].properties;
+            const occupancyRate = Math.round((properties.occupancy / properties.capacity) * 100);
+            
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+            
+            new mapboxgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(`
+                    <div style="padding: 10px;">
+                        <h3 style="margin: 0 0 10px 0; color: #333;">${properties.name}</h3>
+                        <p style="margin: 5px 0;"><strong>Adresse:</strong> ${properties.address}</p>
+                        <p style="margin: 5px 0;"><strong>Kapacitet:</strong> ${properties.capacity} pladser</p>
+                        <p style="margin: 5px 0;"><strong>Belægning:</strong> ${properties.occupancy}/${properties.capacity} (${occupancyRate}%)</p>
+                        <p style="margin: 5px 0;"><strong>Pris:</strong> ${properties.price_per_hour} kr/time</p>
+                        <p style="margin: 5px 0; font-style: italic;">${properties.description}</p>
+                        <div style="margin-top: 10px; padding: 5px; background: ${occupancyRate < 30 ? '#d4edda' : occupancyRate < 70 ? '#fff3cd' : '#f8d7da'}; border-radius: 3px;">
+                            <strong>${occupancyRate < 30 ? '✅ Mange ledige pladser' : occupancyRate < 70 ? '⚠️ Nogle ledige pladser' : '❌ Næsten fuldt'}</strong>
+                        </div>
+                    </div>
+                `)
+                .addTo(map);
+        });
+
+        // Change cursor on hover
+        map.on('mouseenter', 'parking-spots-layer', () => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'parking-spots-layer', () => {
+            map.getCanvas().style.cursor = '';
+        });
+
+        // Load user contributions
+        contributionManager.loadContributionsToMap();
+
+        // setup the instance, pass callback functions
+        scroller
+        .setup({
+            step: '.step',
+            offset: 0.5,
+            progress: true
+        })
+        .onStepEnter(async response => {
+            const chapter = config.chapters.find(chap => chap.id === response.element.id);
+            response.element.classList.add('active');
+            
+            // Handle solid background
+            if (chapter.solidBackground) {
+                document.body.classList.add('solid-background-active');
+                document.body.style.setProperty('--solid-bg-color', chapter.solidBackground);
+                document.body.style.backgroundColor = chapter.solidBackground;
+            } else {
+                document.body.classList.remove('solid-background-active');
+                document.body.style.backgroundColor = '';
+            }
+            
+            // Check if we're in the arrogance sticky graphic sequence
+            const isArroganceSequence = chapter.stickyGraphic && 
+                (chapter.id === 'arrogance-intro' || chapter.id === 'arrogance-colors' || chapter.id === 'arrogance-reality');
+            
+            // Check if we're in the transformation sticky graphic sequence  
+            const isTransformationSequence = chapter.stickyGraphic && 
+                (chapter.id === 'transformation-intro' || chapter.id === 'transformation-hidalgo' || chapter.id === 'transformation-results');
+            
+            // Handle arrogance sequence
+            if (isArroganceSequence) {
+                document.body.classList.add('sticky-sequence-active', 'arrogance-sequence');
+                document.body.classList.remove('transformation-sequence');
+                
+                // Only animate the map on the first step of the sequence
+                if (chapter.id === 'arrogance-intro') {
+                    map[chapter.mapAnimation || 'flyTo'](chapter.location);
+                }
+            }
+            // Handle transformation sequence
+            else if (isTransformationSequence) {
+                document.body.classList.add('sticky-sequence-active', 'transformation-sequence');
+                document.body.classList.remove('arrogance-sequence');
+                
+                // Only animate the map on the first step of the sequence
+                if (chapter.id === 'transformation-intro') {
+                    map[chapter.mapAnimation || 'flyTo'](chapter.location);
+                }
+            }
+            // Handle normal steps
+            else {
+                document.body.classList.remove('sticky-sequence-active', 'arrogance-sequence', 'transformation-sequence');
+                // Normal map animation for non-sticky steps
+                map[chapter.mapAnimation || 'flyTo'](chapter.location);
+            }
+
+            // Handle callback function
+            if (chapter.callback && typeof window[chapter.callback] === 'function') {
+                window[chapter.callback]();
+            }
+
+            // Handle onChapterEnter
+            if (chapter.onChapterEnter.length > 0) {
+                chapter.onChapterEnter.forEach(callback => {
+                    if (typeof window[callback] === 'function') {
+                        window[callback]();
                     }
                 });
-            });
-        }
+            }
 
-        if (config.showMarkers) {
-            marker.setLngLat(chapter.location.center);
-        }
-    })
-    .onStepExit(response => {
-        response.element.classList.remove('active');
-        
-        // Handle sticky sequence cleanup
-        const chapter = config.chapters.find(chap => chap.id === response.element.id);
-        
-        // If exiting the last step of arrogance sequence
-        if (chapter && chapter.id === 'arrogance-reality') {
-            document.body.classList.remove('arrogance-sequence');
-        }
-        
-        // If exiting the last step of transformation sequence
-        if (chapter && chapter.id === 'transformation-results') {
-            document.body.classList.remove('transformation-sequence');
-        }
-        
-        // Handle onChapterExit callbacks
-        if (chapter && chapter.onChapterExit && chapter.onChapterExit.length > 0) {
-            chapter.onChapterExit.forEach(callback => {
-                if (typeof window[callback] === 'function') {
-                    window[callback]();
-                }
-            });
-        }
-    });
-});
+            if (chapter.rotateAnimation) {
+                map.once('moveend', () => {
+                    const rotateNumber = map.getBearing();
+                    map.rotateTo(rotateNumber + 180, {
+                        duration: 30000, easing: function (t) {
+                            return t;
+                        }
+                    });
+                });
+            }
 
-// resize function to avoid overlap on mobile
-window.addEventListener('resize', scroller.resize);
-
-// Show intro section when it comes into view
-const introSection = document.getElementById('intro');
-if (introSection) {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('show');
-                observer.unobserve(entry.target); // Only trigger once
+            if (config.showMarkers) {
+                marker.setLngLat(chapter.location.center);
+            }
+        })
+        .onStepExit(response => {
+            response.element.classList.remove('active');
+            
+            // Handle sticky sequence cleanup
+            const chapter = config.chapters.find(chap => chap.id === response.element.id);
+            
+            // If exiting the last step of arrogance sequence
+            if (chapter && chapter.id === 'arrogance-reality') {
+                document.body.classList.remove('arrogance-sequence');
+            }
+            
+            // If exiting the last step of transformation sequence
+            if (chapter && chapter.id === 'transformation-results') {
+                document.body.classList.remove('transformation-sequence');
+            }
+            
+            // Handle onChapterExit callbacks
+            if (chapter && chapter.onChapterExit && chapter.onChapterExit.length > 0) {
+                chapter.onChapterExit.forEach(callback => {
+                    if (typeof window[callback] === 'function') {
+                        window[callback]();
+                    }
+                });
             }
         });
-    }, {
-        threshold: 0.1, // Trigger when 10% of the element is visible
-        rootMargin: '0px 0px -10% 0px' // Start animation slightly before element is fully in view
     });
-    
-    observer.observe(introSection);
-}
 
-// Global variable to store parking data for space comparison
-let globalParkingData = null;
+    // resize function to avoid overlap on mobile
+    window.addEventListener('resize', scroller.resize);
 
-// Callback function for space comparison
-function showSpaceComparison() {
-    if (globalParkingData) {
-        const visualization = spaceComparison.generateVisualization(globalParkingData);
-        const comparisonHTML = spaceComparison.createComparisonHTML(visualization);
+    // Show intro section when it comes into view
+    const introSection = document.getElementById('intro');
+    if (introSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    observer.unobserve(entry.target); // Only trigger once
+                }
+            });
+        }, {
+            threshold: 0.1, // Trigger when 10% of the element is visible
+            rootMargin: '0px 0px -10% 0px' // Start animation slightly before element is fully in view
+        });
         
-        // Find the current chapter and add the comparison
-        const currentChapter = document.querySelector('#hvad-tager-parkering div');
-        if (currentChapter && !currentChapter.querySelector('.space-comparison')) {
-            currentChapter.insertAdjacentHTML('beforeend', comparisonHTML);
+        observer.observe(introSection);
+    }
+
+    // Global variable to store parking data for space comparison
+    let globalParkingData = null;
+
+    // Space comparison (Michael Szell)
+    function showSpaceComparison() {
+        const chapter = config.chapters.find(chap => chap.id === 'space-stats');
+        // Ensure the container exists and is the correct one for this chapter's content
+        const chapterElement = document.getElementById('space-stats');
+        if (!chapterElement) {
+            console.error("Chapter element 'space-stats' not found for space comparison.");
+            return;
+        }
+        
+        // The content of the chapter is directly in the chapter div, not in mapboxgl-scroll-overlay-content for this setup
+        // If the structure is <div id="space-stats" class="step"><h3>Title</h3><p>Desc</p><div><!-- content from js here --></div></div>
+        // We need to ensure we are targeting the correct div for injection or clearing previous content.
+        // For simplicity, let's assume the chapter description is static and we append/replace a dedicated div for the comparison.
+
+        // If the chapter's main div should be filled, ensure it's clean or find a specific target inside it.
+        // Let's look at how chapters are built:
+        // var chapterDiv = document.createElement('div'); (used for title/desc)
+        // var container = document.createElement('div'); (this is the .step with the ID)
+        // container.appendChild(chapterDiv);
+        // So, the content from spaceComparison should go into the container, perhaps after the chapterDiv.
+
+        let targetContainer = chapterElement.querySelector('.space-comparison-container');
+        if (!targetContainer) {
+            targetContainer = document.createElement('div');
+            targetContainer.className = 'space-comparison-container';
+            // Insert after the existing title and description which are in a direct child div of chapterElement
+            const existingContent = chapterElement.querySelector('div'); // The one holding title/desc
+            if (existingContent && existingContent.nextSibling) {
+                chapterElement.insertBefore(targetContainer, existingContent.nextSibling);
+            } else if (existingContent) {
+                chapterElement.appendChild(targetContainer);
+            } else { // If no initial title/desc div, just append to chapter element
+                chapterElement.appendChild(targetContainer);
+            }
+        }
+        
+        const visualizationData = spaceComparison.generateVisualization(); // No longer needs globalParkingData
+        const html = spaceComparison.createComparisonHTML(visualizationData);
+        targetContainer.innerHTML = html; // Use the dedicated container
+    }
+
+    // Callback function for impact statistics
+    function showImpactStats() {
+        if (globalParkingData) {
+            impactStats.addToChapter('aktuel-belægning', globalParkingData);
         }
     }
-}
 
-// Callback function for impact statistics
-function showImpactStats() {
-    if (globalParkingData) {
-        impactStats.addToChapter('aktuel-belægning', globalParkingData);
+    // Callback function for Danish urbanism achievements
+    function showDanishUrbanism() {
+        danishUrbanism.addToChapter('dansk-paradoks');
     }
-}
-
-// Callback function for Danish urbanism achievements
-function showDanishUrbanism() {
-    danishUrbanism.addToChapter('dansk-paradoks');
-}
-</script>
+    </script>
 
 </body>
 </html> 

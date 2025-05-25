@@ -213,11 +213,12 @@ function showParkingVisualization() {
 const scrollParkingVisualization = {
     currentViz: null,
     isInitialized: false,
-    
+    observer: null, // Added for IntersectionObserver
+
     createVisualization() {
         // Remove any existing visualization
         this.cleanup();
-        
+
         // Create full-screen visualization container
         const vizContainer = d3.select('body').append('div')
             .attr('class', 'scroll-parking-viz')
@@ -226,259 +227,204 @@ const scrollParkingVisualization = {
             .style('left', '0')
             .style('width', '100vw')
             .style('height', '100vh')
-            .style('z-index', '10')
-            .style('background', '#2c3e50')
+            .style('z-index', '0') // Ensure it's behind story content
+            .style('background', 'rgba(44, 62, 80, 0.9)') // Dark semi-transparent background
             .style('display', 'flex')
             .style('flex-direction', 'column')
             .style('align-items', 'center')
             .style('justify-content', 'center')
-            .style('pointer-events', 'none');
-        
-        // Add title
+            .style('pointer-events', 'none') // Allow clicks to pass through
+            .style('opacity', 0); // Initially hidden
+
+        this.currentViz = vizContainer;
+
+        // Add title (optional, as text will scroll over)
         const title = vizContainer.append('h2')
+            .attr('class', 'scroll-viz-title') // Added class for potential styling
             .style('color', 'white')
             .style('text-align', 'center')
             .style('margin-bottom', '40px')
             .style('font-size', '2.5rem')
             .style('font-weight', '300')
-            .style('opacity', '0')
-            .text('1.000 lejede parkeringspladser');
+            .style('opacity', '0') // Start hidden, will be controlled by animation phases
+            .text(''); // Title can be set dynamically or removed
         
         // SVG setup for 20x20 grid (400 spots representing 100%)
-        const width = Math.min(800, window.innerWidth - 100);
-        const height = Math.min(600, window.innerHeight - 200);
-        const spotSize = Math.min(width / 22, height / 22); // 20 spots + spacing
-        const spacing = spotSize * 0.2;
-        const gridSize = 20;
-        
+        const svgWidth = Math.min(800, window.innerWidth * 0.8); // Responsive width
+        const svgHeight = Math.min(600, window.innerHeight * 0.7); // Responsive height
+        const spotSize = Math.min(svgWidth / 25, svgHeight / 25); // Adjusted for more spacing
+        const spacing = spotSize * 0.25; // Relative spacing
+        const spotsPerRow = 20;
+        const totalSpots = 400; // 20x20 grid
+
         const svg = vizContainer.append('svg')
-            .attr('width', width)
-            .attr('height', height)
-            .style('border', '2px solid rgba(255,255,255,0.2)')
-            .style('border-radius', '12px');
-        
-        // Calculate centered grid layout
-        const gridWidth = gridSize * (spotSize + spacing) - spacing;
-        const gridHeight = gridSize * (spotSize + spacing) - spacing;
-        const startX = (width - gridWidth) / 2;
-        const startY = (height - gridHeight) / 2;
-        
-        // Create parking spots data (20x20 grid)
+            .attr('width', svgWidth)
+            .attr('height', svgHeight)
+            .style('display', 'block')
+            .style('margin', '0 auto');
+
+        // Calculate grid layout
+        const rows = Math.ceil(totalSpots / spotsPerRow);
+        const gridWidth = spotsPerRow * (spotSize + spacing) - spacing;
+        const gridHeight = rows * (spotSize + spacing) - spacing;
+        const startX = (svgWidth - gridWidth) / 2;
+        const startY = (svgHeight - gridHeight) / 2;
+
+        // Create parking spots data
         const spotsData = [];
-        for (let row = 0; row < gridSize; row++) {
-            for (let col = 0; col < gridSize; col++) {
-                const spotIndex = row * gridSize + col;
-                spotsData.push({
-                    id: spotIndex,
-                    x: startX + col * (spotSize + spacing),
-                    y: startY + row * (spotSize + spacing),
-                    occupied: spotIndex < 56, // 14% of 400 = 56 spots
-                    row: row,
-                    col: col,
-                    waveDelay: (row + col) // For wave animation
-                });
-            }
-        }
-        
-        // Create spots
-        const spots = svg.selectAll('.parking-spot')
-            .data(spotsData)
-            .enter()
-            .append('rect')
-            .attr('class', 'parking-spot')
-            .attr('x', d => d.x)
-            .attr('y', d => d.y)
-            .attr('width', spotSize)
-            .attr('height', spotSize)
-            .attr('rx', 2)
-            .style('fill', '#34495e')
-            .style('stroke', '#7f8c8d')
-            .style('stroke-width', 1)
-            .style('opacity', 0);
-        
-        // Stats display
-        const statsContainer = vizContainer.append('div')
-            .style('margin-top', '30px')
-            .style('display', 'flex')
-            .style('justify-content', 'center')
-            .style('gap', '60px')
-            .style('color', 'white')
-            .style('font-size', '1.2rem')
-            .style('opacity', '0');
-        
-        const occupiedCounter = statsContainer.append('div')
-            .style('text-align', 'center');
-        
-        occupiedCounter.append('div')
-            .attr('class', 'occupied-number')
-            .style('font-size', '3rem')
-            .style('font-weight', 'bold')
-            .style('color', '#e74c3c')
-            .style('margin-bottom', '10px')
-            .text('0');
-            
-        occupiedCounter.append('div')
-            .style('font-size', '1rem')
-            .style('color', '#ecf0f1')
-            .text('Optaget (14%)');
-        
-        const emptyCounter = statsContainer.append('div')
-            .style('text-align', 'center');
-        
-        emptyCounter.append('div')
-            .attr('class', 'empty-number')
-            .style('font-size', '3rem')
-            .style('font-weight', 'bold')
-            .style('color', '#95a5a6')
-            .style('margin-bottom', '10px')
-            .text('0');
-            
-        emptyCounter.append('div')
-            .style('font-size', '1rem')
-            .style('color', '#ecf0f1')
-            .text('Tomme (86%)');
-        
-        const costCounter = statsContainer.append('div')
-            .style('text-align', 'center');
-        
-        costCounter.append('div')
-            .style('font-size', '2.5rem')
-            .style('font-weight', 'bold')
-            .style('color', '#f39c12')
-            .style('margin-bottom', '10px')
-            .style('opacity', '0')
-            .text('16,3 mio kr');
-            
-        costCounter.append('div')
-            .style('font-size', '1rem')
-            .style('color', '#ecf0f1')
-            .style('opacity', '0')
-            .text('Spildt årligt');
-        
-        // Store references
-        this.currentViz = vizContainer;
-        this.elements = {
-            title,
-            spots,
-            statsContainer,
-            occupiedNumber: occupiedCounter.select('.occupied-number'),
-            emptyNumber: emptyCounter.select('.empty-number'),
-            costAmount: costCounter.select('div:first-child'),
-            costLabel: costCounter.select('div:last-child')
-        };
-        
-        this.spotsData = spotsData;
-        this.isInitialized = true;
-        
-        // Set up scroll listener
-        this.setupScrollListener();
-    },
-    
-    setupScrollListener() {
-        if (this.scrollListener) {
-            window.removeEventListener('scroll', this.scrollListener);
-        }
-        
-        this.scrollListener = () => {
-            const vizChapter = document.getElementById('parking-visualization');
-            if (!vizChapter || !this.isInitialized) return;
-            
-            const rect = vizChapter.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            
-            // Calculate scroll progress through the visualization chapter
-            // Progress goes from 0 to 1 as we scroll through the chapter
-            const progress = Math.max(0, Math.min(1, 
-                (windowHeight - rect.top) / (windowHeight + rect.height)
-            ));
-            
-            this.updateVisualization(progress);
-        };
-        
-        window.addEventListener('scroll', this.scrollListener);
-    },
-    
-    updateVisualization(progress) {
-        if (!this.elements || !this.spotsData) return;
-        
-        const { title, spots, statsContainer, occupiedNumber, emptyNumber, costAmount, costLabel } = this.elements;
-        
-        // Phase 1: Show title (0-0.15)
-        if (progress > 0.05) {
-            title.style('opacity', Math.min(1, (progress - 0.05) / 0.1));
-        }
-        
-        // Phase 2: Show spots appearing in waves (0.15-0.5)
-        if (progress > 0.15) {
-            const spotProgress = Math.min(1, (progress - 0.15) / 0.35);
-            const maxDelay = Math.max(...this.spotsData.map(d => d.waveDelay));
-            
-            spots.style('opacity', d => {
-                const normalizedDelay = d.waveDelay / maxDelay;
-                return spotProgress > normalizedDelay ? 1 : 0;
+        for (let i = 0; i < totalSpots; i++) {
+            const row = Math.floor(i / spotsPerRow);
+            const col = i % spotsPerRow;
+            spotsData.push({
+                id: i,
+                x: startX + col * (spotSize + spacing),
+                y: startY + row * (spotSize + spacing),
+                isOccupiedInitially: Math.random() < 0.14 // ~14% are initially occupied (randomly)
             });
         }
+
+        // Create spots (circles inspired by the screenshot)
+        const spots = svg.selectAll('.parking-spot-circle')
+            .data(spotsData)
+            .enter()
+            .append('circle')
+            .attr('class', 'parking-spot-circle')
+            .attr('cx', d => d.x + spotSize / 2)
+            .attr('cy', d => d.y + spotSize / 2)
+            .attr('r', spotSize / 2 * 0.8) // Smaller radius for dot effect
+            .style('fill', 'rgba(255, 255, 255, 0.3)') // Faint white for empty spots
+            .style('opacity', 0);
         
-        // Phase 3: Color occupied spots red (0.5-0.65)
-        if (progress > 0.5) {
-            const colorProgress = Math.min(1, (progress - 0.5) / 0.15);
+        this.spots = spots; // Storing for startAnimation
+        this.spotsData = spotsData; // Storing for startAnimation
+        this.titleElement = title; // Store title element
+
+        this.isInitialized = true;
+        // Don't call setupScrollListener here, IntersectionObserver will handle it
+    },
+
+    startAnimation() {
+        if (!this.isInitialized || !this.currentViz) return;
+
+        this.currentViz.transition().duration(500).style('opacity', 1);
+        this.titleElement.text("").style('opacity', 0); // Ensure it's empty and hidden
+
+
+        // Phase 1: All spots (empty circles) appear
+        this.spots
+            .transition()
+            .duration(1000)
+            .delay((d, i) => i * 5) // Staggered appearance
+            .style('opacity', 1)
+            .style('fill', 'rgba(255, 255, 255, 0.2)'); // Faint white empty spots (like screenshot)
+
+        // Phase 2: Randomly fill 14% of spots with solid white
+        setTimeout(() => {
+            if (!this.spotsData || !this.spots) return; // Guard against cleanup
+            const occupiedSpotsData = d3.shuffle(this.spotsData.slice()).slice(0, Math.floor(0.14 * this.spotsData.length));
             
-            spots.filter(d => d.occupied)
-                .style('fill', d3.interpolateRgb('#34495e', '#e74c3c')(colorProgress));
-            
-            // Show occupied counter
-            const occupiedCount = Math.round(56 * colorProgress);
-            occupiedNumber.text(occupiedCount);
-        }
-        
-        // Phase 4: Color empty spots gray and show stats (0.65-0.8)
-        if (progress > 0.65) {
-            const emptyProgress = Math.min(1, (progress - 0.65) / 0.15);
-            
-            spots.filter(d => !d.occupied)
-                .style('fill', d3.interpolateRgb('#34495e', '#95a5a6')(emptyProgress));
-            
-            // Show empty counter
-            const emptyCount = Math.round(344 * emptyProgress);
-            emptyNumber.text(emptyCount);
-            
-            // Show stats container
-            statsContainer.style('opacity', emptyProgress);
-        }
-        
-        // Phase 5: Show cost implications (0.8-1.0)
-        if (progress > 0.8) {
-            const costProgress = Math.min(1, (progress - 0.8) / 0.2);
-            costAmount.style('opacity', costProgress);
-            costLabel.style('opacity', costProgress);
-        }
+            this.spots
+                .filter(d => occupiedSpotsData.some(occupied => occupied.id === d.id))
+                .transition()
+                .duration(1500)
+                .delay((d,i) => Math.random() * 1000) // Random delay for filling effect
+                .style('fill', 'rgba(255, 255, 255, 1)') // Solid white for occupied (like screenshot)
+                .style('r', parseFloat(this.spots.attr('r')) * 1.1); // Ensure 'r' is a number
+
+        }, 2000); // Start after initial spots appear
+
+        // Phase 3: Highlight the 86% empty
+         setTimeout(() => {
+            if (!this.spots) return; // Guard against cleanup
+            this.spots
+                 .filter(function() { // Use a function to access current element's style
+                     return d3.select(this).style('fill') !== 'rgb(255, 255, 255)'; // Check against the solid white
+                 })
+                 .transition()
+                 .duration(1000)
+                 .style('fill', 'rgba(255, 255, 255, 0.1)'); // Even more faint for clearly empty
+        }, 4500);
+
+
+        // Add more phases or interactions as needed, potentially tied to scroll later
     },
     
-    cleanup() {
-        if (this.scrollListener) {
-            window.removeEventListener('scroll', this.scrollListener);
-            this.scrollListener = null;
+    observeTarget(targetElementSelector) {
+        const target = document.querySelector(targetElementSelector);
+        if (!target) {
+            console.warn("IntersectionObserver target not found:", targetElementSelector);
+            return;
         }
-        
+
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (!this.isInitialized) { // Was never shown or was properly cleaned up
+                        this.createVisualization();
+                        this.startAnimation();
+                    } else {
+                        // Is initialized, but was made invisible (scrolled below and now back)
+                        // We need to make it visible and restart the animation
+                        this.currentViz.style('opacity', 0); // Ensure it fades in fresh
+                        this.startAnimation();
+                    }
+                } else { // Not intersecting
+                    if (this.currentViz) {
+                        const rect = entry.boundingClientRect;
+                        // Check if the element is completely above the viewport
+                        const isScrolledPastUpwards = rect.bottom < 0;
+
+                        this.currentViz.transition().duration(300).style('opacity', 0).on("end", () => {
+                            if (isScrolledPastUpwards) {
+                                this.cleanup(); // Full reset only if scrolled past upwards
+                            }
+                            // If scrolled out downwards, it's now just hidden (opacity 0).
+                            // isInitialized remains true.
+                        });
+                    }
+                }
+            });
+        }, { threshold: 0.6 }); // Trigger when 60% of the target is visible
+
+        this.observer.observe(target);
+    },
+
+    cleanup() {
+        if (this.observer) { 
+            this.observer.disconnect(); 
+            this.observer = null;
+        }
         if (this.currentViz) {
             this.currentViz.remove();
             this.currentViz = null;
         }
-        
-        this.elements = null;
+        this.isInitialized = false; 
+        this.spots = null;
         this.spotsData = null;
-        this.isInitialized = false;
+        this.titleElement = null;
     }
 };
 
-// Function to be called from the chapter callback
+// Function to be called from the chapter callback, now sets up the observer
 function showScrollParkingVisualization() {
-    setTimeout(() => {
-        scrollParkingVisualization.createVisualization();
-    }, 500);
+    // The ID of the chapter div that will trigger the animation
+    scrollParkingVisualization.observeTarget('#parking-visualization'); 
 }
 
-// Cleanup function for when leaving the visualization
 function cleanupScrollParkingVisualization() {
     scrollParkingVisualization.cleanup();
-} 
+}
+
+// Example of how this might be called in config.js:
+// {
+// id: 'parking-visualization-static-dots',
+// ...
+// onChapterEnter: ['prepareParkingVisualization'], // Shows static dots
+// onChapterExit: [], // Potentially hide if next chapter isn't sampling
+// },
+// {
+// id: 'parking-visualization-sampling-start',
+// ...
+// onChapterEnter: ['startParkingSampling'], // Starts sampling animation
+// onChapterExit: ['cleanupScrollParkingVisualization'] // Or on a later chapter
+// }, 

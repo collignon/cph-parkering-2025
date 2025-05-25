@@ -217,29 +217,11 @@ var config = {
             solidBackground: '#2c3e50'
         },
         {
-            id: 'space-stats',
-            alignment: 'center',
-            hidden: false,
-            title: 'Hvad kunne vi få i stedet?',
-            description: 'Hvis vi omdannede bare de tomme private parkeringspladser i København, kunne vi få betydeligt mere byrum til mennesker.',
-            location: {
-                center: [12.5683, 55.6761],
-                zoom: 12,
-                pitch: 0,
-                bearing: 0
-            },
-            mapAnimation: 'flyTo',
-            rotateAnimation: false,
-            callback: 'showSpaceComparison',
-            onChapterEnter: [],
-            onChapterExit: []
-        },
-        {
             id: 'hvad-tager-parkering',
             alignment: 'center',
             hidden: false,
             title: 'Hvad tager parkering fra os?',
-            description: 'Forskning viser at biler optager 60-70% af byens offentlige rum, men bruges kun 5% af tiden. I København kunne tomme private parkeringspladser blive til cykelstier, grønne områder, legepladser og caféliv.<br><br>Som byplanlægger Michael Szell påpeger: "Vi har givet bilen alt for meget plads i vores byer."<br><br>Kilder: <a href="http://michael.szell.net/downloads/talk_szell2019rwu.pdf">Szell (2019) - Urban Space Distribution</a>',
+            description: 'Forskning viser at biler optager 60-70% af byens offentlige rum, men bruges kun 5% af tiden. I København kunne tomme private parkeringspladser blive til cykelstier, grønne områder, legepladser og caféliv.<br><br>Som byplanlægger Michael Szell påpeger: "Vi har givet bilen alt for meget plads i vores byer."<br><br>Kilder: <a href="http://michael.szell.net/downloads/talk_szell2019rwu.pdf">Szell (2019) - Urban Space Distribution</a><br><br>Lad os se på, hvad hver enkelt P-plads konkret kan omdannes til:',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 12,
@@ -249,26 +231,58 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
+            onChapterEnter: ['initializeSpaceAlternativesDisplay', 'hvad-tager-parkering'],
             onChapterExit: []
         },
         {
-            id: 'gehl-revolution',
-            alignment: 'center',
-            hidden: false,
-            title: 'Jan Gehl revolutionerede byplanlægning',
-            description: 'I 1960\'erne startede Jan Gehl en revolution fra København. Hans forskning i hvordan mennesker bruger byrum ændrede byplanlægning globalt.<br><br>Fra Strøget - verdens første gågade (1962) - til Times Square i New York. Gehls principper om "cities for people" bruges nu i hundredvis af byer verden over.<br><br><strong>Resultatet: Mere liv, mindre biler, bedre byer.</strong><br><br>Kilde: <a href="https://gehlpeople.com/">Gehl Architects</a>',
-            location: {
-                center: [12.5683, 55.6761],
-                zoom: 14,
-                pitch: 0,
-                bearing: 0
-            },
-            mapAnimation: 'flyTo',
-            rotateAnimation: false,
-            callback: '',
-            onChapterEnter: [],
+            id: 'space-alternative-bike_lanes',
+            alignment: 'left',
+            title: '🚴‍♀️ Mere plads til cykler',
+            description: 'En enkelt parkeringsplads (ca. 12.5m²) kan omdannes til <strong>20 meter sikker cykelsti</strong>. Med tusindvis af tomme pladser kunne vi bygge et endnu tættere og mere attraktivt cykelnetværk, der forbinder hele København og gør hverdagen lettere for byens mange cyklister.',
+            location: { center: [12.5683, 55.6761], zoom: 12.5, pitch: 10, bearing: 0 },
+            mapAnimation: 'easeTo',
+            onChapterEnter: ['highlightSpaceAlternative', 'bike_lanes'],
             onChapterExit: []
+        },
+        {
+            id: 'space-alternative-trees',
+            alignment: 'right',
+            title: '🌳 Flere træer og grønt',
+            description: 'For hver P-plads kan vi plante <strong>2-3 store bytræer</strong>. Træer forbedrer luftkvaliteten, reducerer støj, skaber skygge og øger biodiversiteten. Flere grønne lommer ville gøre byen smukkere og mere behagelig at opholde sig i, samtidig med at de hjælper med at håndtere regnvand.',
+            location: { center: [12.5650, 55.6750], zoom: 12.5, pitch: 10, bearing: 0 },
+            mapAnimation: 'easeTo',
+            onChapterEnter: ['highlightSpaceAlternative', 'trees'],
+            onChapterExit: []
+        },
+        {
+            id: 'space-alternative-outdoor_seating',
+            alignment: 'left',
+            title: '☕ Hyggelige udeserveringer',
+            description: 'En P-plads giver plads til <strong>8-12 ekstra cafépladser</strong>. Forestil dig flere levende gadehjørner med summende udeserveringer, hvor folk kan mødes, nyde en kop kaffe og bidrage til bylivet. Dette skaber også nye muligheder for lokale erhvervsdrivende.',
+            location: { center: [12.5700, 55.6780], zoom: 12.5, pitch: 10, bearing: 0 },
+            mapAnimation: 'easeTo',
+            onChapterEnter: ['highlightSpaceAlternative', 'outdoor_seating'],
+            onChapterExit: []
+        },
+        {
+            id: 'space-alternative-playground',
+            alignment: 'right',
+            title: '🛝 Legepladser for børnene',
+            description: 'En P-plads svarer til <strong>ca. 15m² ny legeplads</strong>. I en tæt by som København er der altid brug for flere sikre og inspirerende legemuligheder for børn. Små, velplacerede legepladser kan gøre en stor forskel for byens børnefamilier.',
+            location: { center: [12.5620, 55.6790], zoom: 12.5, pitch: 10, bearing: 0 },
+            mapAnimation: 'easeTo',
+            onChapterEnter: ['highlightSpaceAlternative', 'playground'],
+            onChapterExit: []
+        },
+        {
+            id: 'space-alternative-green_space',
+            alignment: 'left',
+            title: '🌱 Små grønne oaser',
+            description: 'Hver P-plads kan blive til _15m² ny park_ eller et lille grønt byrum. Disse små oaser kan være steder for afslapning, fællesskabshaver eller blot et pusterum i byens travlhed, og bidrager til en sundere og mere bæredygtig by.',
+            location: { center: [12.5683, 55.6761], zoom: 12, pitch: 0, bearing: 0 },
+            mapAnimation: 'easeTo',
+            onChapterEnter: ['highlightSpaceAlternative', 'green_space'],
+            onChapterExit: ['clearSpaceAlternativesDisplay']
         },
         {
             id: 'arrogance-intro',
@@ -332,12 +346,12 @@ var config = {
         },
         {
             id: 'transformation-intro',
-            alignment: 'center',
+            alignment: 'lefty',
             hidden: false,
             title: 'Paris: Fra biler til mennesker',
             description: 'Dette billede viser den dramatiske transformation som er mulig når man bekæmper "the arrogance of space".',
             location: {
-                center: [2.3522, 48.8566], // Paris coordinates
+                center: [2.3522, 48.8566],
                 zoom: 13,
                 pitch: 15,
                 bearing: 45
@@ -345,19 +359,17 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
-            onChapterExit: [],
-            backgroundImage: './assets/Paris is Looking Great.webp',
-            stickyGraphic: true
+            onChapterEnter: ['showParisStickyImage'],
+            onChapterExit: []
         },
         {
             id: 'transformation-hidalgo',
-            alignment: 'center',
+            alignment: 'lefty',
             hidden: false,
             title: 'Anne Hidalgo\'s vision',
             description: 'Under borgmester Anne Hidalgo er Paris blevet omdannet fra en bilby til en cykelby.<br><br>En transformation der viser hvad politisk vilje kan opnå når man vælger mennesker over maskiner.',
             location: {
-                center: [2.3522, 48.8566], // Paris coordinates
+                center: [2.3522, 48.8566],
                 zoom: 13,
                 pitch: 15,
                 bearing: 45
@@ -366,18 +378,16 @@ var config = {
             rotateAnimation: false,
             callback: '',
             onChapterEnter: [],
-            onChapterExit: [],
-            backgroundImage: './assets/Paris is Looking Great.webp',
-            stickyGraphic: true
+            onChapterExit: []
         },
         {
             id: 'transformation-results',
-            alignment: 'center',
+            alignment: 'lefty',
             hidden: false,
             title: 'Konkrete resultater',
             description: '<strong>Konkrete resultater:</strong><br>• 1.000 km cykelstier siden 2014<br>• 75% færre biler i centrum<br>• 200% stigning i cykling<br><br>Danske principper og dansk ekspertise var central i denne transformation.',
             location: {
-                center: [2.3522, 48.8566], // Paris coordinates
+                center: [2.3522, 48.8566],
                 zoom: 13,
                 pitch: 15,
                 bearing: 45
@@ -386,16 +396,68 @@ var config = {
             rotateAnimation: false,
             callback: '',
             onChapterEnter: [],
-            onChapterExit: [],
-            backgroundImage: './assets/Paris is Looking Great.webp',
-            stickyGraphic: true
+            onChapterExit: ['hideParisStickyImage']
         },
         {
-            id: 'dansk-export-intro',
-            alignment: 'center',
+            id: 'danish-urban-export',
+            alignment: 'left',
             hidden: false,
             title: 'Danmarks urbane eksport',
-            description: 'Danske urbane løsninger eksporteres til hele verden. Fra København er principper om menneskecentrerede byer spredt til over 100 byer verden over.<br><br>Jan Gehl, Mikael Colville-Andersen og andre danske eksperter har hjulpet byer med at bekæmpe "the arrogance of space".<br><br>Lad os se på fire konkrete eksempler:',
+            description: 'Danske urbane løsninger eksporteres til hele verden. Fra København er principper om menneskecentrerede byer spredt til over 100 byer verden over.',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: []
+        },
+        {
+            id: 'jan-gehl-revolution',
+            alignment: 'left',
+            hidden: false,
+            title: 'Jan Gehl revolutionerede byplanlægning',
+            description: 'I 1960\'erne startede Jan Gehl en revolution fra København. Hans forskning i hvordan mennesker bruger byrum ændrede byplanlægning globalt.<br><br>Fra Strøget - verdens første gågade (1962) - til Times Square i New York. Gehls principper om "cities for people" bruges nu i hundredvis af byer verden over.<br><br>Resultatet: Mere liv, mindre biler, bedre byer.<br><br>Kilde: Gehl Architects',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: []
+        },
+        {
+            id: 'danish-experts-lead',
+            alignment: 'left',
+            hidden: false,
+            title: 'Danske eksperter viser vejen',
+            description: 'Jan Gehl, Mikael Colville-Andersen og andre danske eksperter har hjulpet byer med at bekæmpe "the arrogance of space".<br><br>Lad os se på fire konkrete eksempler:',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 12,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: [],
+            onChapterExit: []
+        },
+        {
+            id: 'cph-pause-before-nyc',
+            alignment: 'left',
+            hidden: false,
+            title: '',
+            description: '<p style="height: 50vh;"></p>',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 12,
@@ -415,7 +477,7 @@ var config = {
             title: 'New York: Protected Bike Lanes',
             description: 'New York City implementerede protected bike lanes efter københavnsk model. Janette Sadik-Khan, tidligere transportkommissær, arbejdede tæt sammen med danske eksperter.<br><br>Resultatet: Times Square blev omdannet fra kaotisk trafikknudepunkt til fodgængerzone, og cykling steg med over 200%.<br><br><strong>Dansk DNA:</strong> Principper fra Strøget og Københavns cykelinfrastruktur blev kernen i NYCs transformation.',
             location: {
-                center: [-74.0060, 40.7128], // New York coordinates
+                center: [-74.0060, 40.7128],
                 zoom: 11,
                 pitch: 0,
                 bearing: 0
@@ -435,7 +497,7 @@ var config = {
             title: 'Barcelona: Superblocks',
             description: 'Barcelonas superblocks bygger på danske principper om at prioritere mennesker over biler. Salvador Rueda udviklede konceptet baseret på Jan Gehls teorier og Jane Jacobs\' ideer.<br><br><strong>Resultatet:</strong> 21 kvadratkilometer bilbelagt areal omdannet til offentligt rum for mennesker.<br><br>Som beskrevet på [gabarcelona.com](https://www.gabarcelona.com/blog/superblocks/): "Superblocks follow Jacobs\' theoretical framework in most of their guidelines" og implementerer Gehls "soft edges" principper.',
             location: {
-                center: [2.1734, 41.3851], // Barcelona coordinates
+                center: [2.1734, 41.3851],
                 zoom: 11,
                 pitch: 0,
                 bearing: 0
@@ -455,7 +517,7 @@ var config = {
             title: 'Bogotá: Ciclovía',
             description: 'Bogotás Ciclovía - verdens største bilhegnsdag - er baseret på dansk cykelkultur og filozofi. Hver søndag lukkes 120 km veje for biler.<br><br><strong>50 års succes:</strong> Over 1,5 millioner borgere deltager hver søndag. Konceptet er nu exporteret til 400+ byer verden over.<br><br>Som [World Economic Forum](https://www.weforum.org/stories/2024/11/50-years-ciclovia-open-streets-cycling-cars/) beskriver: Ciclovía demonstrerer hvordan byer kan prioritere mennesker over maskiner - en kerneværdi fra dansk byplanlægning.',
             location: {
-                center: [-74.0721, 4.7110], // Bogotá coordinates
+                center: [-74.0721, 4.7110],
                 zoom: 11,
                 pitch: 0,
                 bearing: 0
@@ -475,7 +537,7 @@ var config = {
             title: 'Melbourne: Laneways Revival',
             description: 'Jan Gehl designede Melbournes transformation fra bilorienteret by til fodgængervenliges centrum. Hans arbejde med laneways skabte "verdens mest livable city".<br><br><strong>Før Gehl:</strong> Døde gader efter kontortid<br><strong>Efter Gehl:</strong> Pulserende byliv 24/7<br><br>Som beskrevet i [The Discourse](https://thediscourse.ca/scarborough/melbourne-transformed-tiny-laneways-pedestrian-mecca): Melbournes transformation fra "tiny laneways to pedestrian mecca" byggede på danske principper om skala, liv og menneskecentreret design.',
             location: {
-                center: [144.9631, -37.8136], // Melbourne coordinates
+                center: [144.9631, -37.8136],
                 zoom: 11,
                 pitch: 0,
                 bearing: 0
