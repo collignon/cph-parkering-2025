@@ -1,46 +1,47 @@
 // D3 Parking Occupancy Visualization
 const parkingVisualization = {
-    createVisualization() {
-        const container = d3.select('#aktuel-belægning div');
+    createVisualization(customContainer = null) {
+        // Use custom container if provided, otherwise fall back to original
+        const container = customContainer ? d3.select(customContainer) : d3.select('#aktuel-belægning div');
         
         // Remove any existing visualization
         container.select('.parking-viz').remove();
         
-        // Create visualization container
+        // Create completely transparent visualization container
         const vizContainer = container.append('div')
             .attr('class', 'parking-viz')
-            .style('margin', '30px 0')
-            .style('padding', '30px')
-            .style('background', 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)')
-            .style('border-radius', '12px')
-            .style('box-shadow', '0 4px 20px rgba(0,0,0,0.1)');
-        
-        // Add title
-        vizContainer.append('h3')
-            .style('text-align', 'center')
-            .style('color', '#2c3e50')
-            .style('margin-bottom', '25px')
-            .style('font-size', '1.5rem')
-            .text('1.000 lejede parkeringspladser - kun 14% bruges');
+            .style('margin', '0')
+            .style('padding', '0')
+            .style('background', 'none')
+            .style('border', 'none')
+            .style('box-shadow', 'none')
+            .style('text-align', 'center');
         
         // SVG setup
-        const width = Math.min(600, window.innerWidth - 100);
-        const height = 400;
-        const spotSize = 8;
-        const spacing = 2;
-        const spotsPerRow = Math.floor(width / (spotSize + spacing));
+        const containerWidth = customContainer ? 
+            Math.min(350, window.innerWidth * 0.3) : 
+            Math.min(600, window.innerWidth - 100);
+        const containerHeight = customContainer ? 280 : 350;
+        const width = containerWidth;
+        const height = containerHeight - 60; // Leave space for stats below
+        const spotSize = customContainer ? 8 : 10;
+        const spacing = customContainer ? 2 : 3;
+        const spotsPerRow = 10; // Fixed 10x10 grid
         const totalSpots = 100; // Representing 100%
         
         const svg = vizContainer.append('svg')
             .attr('width', width)
             .attr('height', height)
             .style('display', 'block')
-            .style('margin', '0 auto');
+            .style('margin', '0 auto')
+            .style('background', 'transparent');
         
-        // Calculate grid layout
-        const rows = Math.ceil(totalSpots / spotsPerRow);
-        const startX = (width - (spotsPerRow * (spotSize + spacing))) / 2;
-        const startY = (height - (rows * (spotSize + spacing))) / 2;
+        // Calculate grid layout for 10x10
+        const rows = 10;
+        const gridWidth = spotsPerRow * (spotSize + spacing) - spacing;
+        const gridHeight = rows * (spotSize + spacing) - spacing;
+        const startX = (width - gridWidth) / 2;
+        const startY = (height - gridHeight) / 2;
         
         // Create parking spots data
         const spotsData = [];
@@ -55,8 +56,8 @@ const parkingVisualization = {
             });
         }
         
-        // Create spots
-        const spots = svg.selectAll('.parking-spot')
+        // Create spots (static, no animation)
+        svg.selectAll('.parking-spot')
             .data(spotsData)
             .enter()
             .append('rect')
@@ -66,139 +67,26 @@ const parkingVisualization = {
             .attr('width', spotSize)
             .attr('height', spotSize)
             .attr('rx', 1)
-            .style('fill', '#e0e0e0')
-            .style('stroke', '#ccc')
-            .style('stroke-width', 0.5)
-            .style('opacity', 0);
+            .style('fill', d => d.occupied ? '#e74c3c' : '#95a5a6')
+            .style('stroke', 'none')
+            .style('stroke-width', 0);
         
-        // Stats container
-        const statsContainer = vizContainer.append('div')
-            .style('display', 'flex')
-            .style('justify-content', 'space-around')
-            .style('margin-top', '25px')
+        // One clear stat
+        const statContainer = vizContainer.append('div')
+            .style('margin-top', '15px')
             .style('text-align', 'center');
         
-        const occupiedStat = statsContainer.append('div')
-            .style('flex', '1');
+        statContainer.append('div')
+            .style('font-size', customContainer ? '1.8rem' : '2.2rem')
+            .style('font-weight', 'bold')
+            .style('color', '#e74c3c')
+            .style('margin-bottom', '5px')
+            .text('14% optaget');
         
-        const emptyStat = statsContainer.append('div')
-            .style('flex', '1');
-        
-        const costStat = statsContainer.append('div')
-            .style('flex', '1');
-        
-        // Animation sequence
-        this.animateVisualization(spots, occupiedStat, emptyStat, costStat);
-        
-        // Legend
-        const legend = vizContainer.append('div')
-            .style('margin-top', '20px')
-            .style('text-align', 'center')
-            .style('font-size', '0.9rem')
-            .style('color', '#666');
-        
-        legend.append('div')
-            .style('display', 'inline-block')
-            .style('margin', '0 15px')
-            .html('<span style="display:inline-block;width:12px;height:12px;background:#e74c3c;margin-right:5px;border-radius:2px;"></span>Optaget (14%)');
-        
-        legend.append('div')
-            .style('display', 'inline-block')
-            .style('margin', '0 15px')
-            .html('<span style="display:inline-block;width:12px;height:12px;background:#95a5a6;margin-right:5px;border-radius:2px;"></span>Ledig (86%)');
-    },
-    
-    animateVisualization(spots, occupiedStat, emptyStat, costStat) {
-        // Step 1: Show all spots appearing
-        spots.transition()
-            .duration(1000)
-            .delay((d, i) => i * 20)
-            .style('opacity', 1);
-        
-        // Step 2: Show occupied spots (red)
-        setTimeout(() => {
-            spots.filter(d => d.occupied)
-                .transition()
-                .duration(800)
-                .style('fill', '#e74c3c');
-            
-            // Update occupied counter
-            occupiedStat.append('div')
-                .style('font-size', '2rem')
-                .style('font-weight', 'bold')
-                .style('color', '#e74c3c')
-                .style('margin-bottom', '5px')
-                .text('14');
-            
-            occupiedStat.append('div')
-                .style('font-size', '1rem')
-                .style('color', '#555')
-                .text('Optaget');
-        }, 2000);
-        
-        // Step 3: Show empty spots (gray) 
-        setTimeout(() => {
-            spots.filter(d => !d.occupied)
-                .transition()
-                .duration(1200)
-                .style('fill', '#95a5a6');
-            
-            // Update empty counter
-            emptyStat.append('div')
-                .style('font-size', '2rem')
-                .style('font-weight', 'bold')
-                .style('color', '#95a5a6')
-                .style('margin-bottom', '5px')
-                .text('86');
-            
-            emptyStat.append('div')
-                .style('font-size', '1rem')
-                .style('color', '#555')
-                .text('Tomme pladser');
-        }, 3500);
-        
-        // Step 4: Show cost implications
-        setTimeout(() => {
-            costStat.append('div')
-                .style('font-size', '1.5rem')
-                .style('font-weight', 'bold')
-                .style('color', '#e67e22')
-                .style('margin-bottom', '5px')
-                .text('16,3 mio kr');
-            
-            costStat.append('div')
-                .style('font-size', '0.9rem')
-                .style('color', '#555')
-                .text('Spildt årligt på tomme pladser');
-        }, 5000);
-        
-        // Step 5: Final message
-        setTimeout(() => {
-            const messageContainer = d3.select('.parking-viz')
-                .append('div')
-                .style('margin-top', '25px')
-                .style('padding', '20px')
-                .style('background', 'rgba(231, 76, 60, 0.1)')
-                .style('border', '2px solid #e74c3c')
-                .style('border-radius', '8px')
-                .style('text-align', 'center')
-                .style('opacity', 0);
-            
-            messageContainer.append('div')
-                .style('font-size', '1.2rem')
-                .style('font-weight', 'bold')
-                .style('color', '#e74c3c')
-                .style('margin-bottom', '10px')
-                .text('86% af dine skattepenge går til tomme parkeringspladser');
-            
-            messageContainer.append('div')
-                .style('color', '#555')
-                .text('Hver tom plads koster 19.000 kr om året');
-            
-            messageContainer.transition()
-                .duration(1000)
-                .style('opacity', 1);
-        }, 6000);
+        statContainer.append('div')
+            .style('font-size', customContainer ? '0.9rem' : '1rem')
+            .style('color', 'white')
+            .text('86% står tomme og koster penge');
     }
 };
 
@@ -428,3 +316,200 @@ function cleanupScrollParkingVisualization() {
 // onChapterEnter: ['startParkingSampling'], // Starts sampling animation
 // onChapterExit: ['cleanupScrollParkingVisualization'] // Or on a later chapter
 // }, 
+
+// Assume 'map' is globally defined
+// Path to the GeoJSON data
+const animatedParkingGeoJsonPath = 'overpass-cph-parking.geojson';
+
+// Variables for animation control
+let animationIntervalId = null;
+let allParkingFeaturesForAnimation = null; // Store all features once loaded
+let animatedFeaturesShownCount = 0; // Count of features shown in current animation run
+let currentAnimatedFeaturesList = []; // Accumulates features for the current animation
+
+// Layer and Source IDs for the animation
+const animatedParkingSourceId = 'animated-parking-source';
+const animatedParkingLayerId = 'animated-parking-points';
+
+// Helper to load GeoJSON data for animation
+async function loadAllParkingFeaturesForAnimation() {
+    if (map && !allParkingFeaturesForAnimation) { // Ensure map is defined
+        try {
+            const response = await fetch(animatedParkingGeoJsonPath);
+            const geojsonData = await response.json();
+            allParkingFeaturesForAnimation = geojsonData.features;
+        } catch (error) {
+            console.error('Error loading parking data for animation:', error);
+            allParkingFeaturesForAnimation = [];
+        }
+    } else if (!map) {
+        // console.warn('Map object not available for loading animation features.');
+        allParkingFeaturesForAnimation = []; // Ensure it's an array
+    }
+}
+
+// Function to remove layers that might conflict (e.g., from showScrollParkingVisualization)
+function clearOtherParkingVisualizations() {
+    if (!map) return; // Map not initialized
+
+    const layersToRemove = ['parking-areas', 'parking-points-dynamic'];
+    const sourcesToRemove = ['parking-data-source'];
+
+    layersToRemove.forEach(layerId => {
+        if (map.getLayer(layerId)) {
+            map.removeLayer(layerId);
+        }
+    });
+    sourcesToRemove.forEach(sourceId => {
+        if (map.getSource(sourceId) && sourceId !== animatedParkingSourceId) {
+            const layersUsingSource = map.getStyle().layers.filter(layer => layer.source === sourceId);
+            if (layersUsingSource.length === 0) {
+                 map.removeSource(sourceId);
+            }
+        }
+    });
+    if (typeof cleanupScrollParkingVisualization === 'function') {
+        cleanupScrollParkingVisualization();
+    }
+}
+
+
+// 1. Hide animated layer and any other parking layers (for text-only intro)
+function hideAnimatedParkingLayer() {
+    if (!map) return;
+    clearOtherParkingVisualizations();
+    if (map.getLayer(animatedParkingLayerId)) {
+        map.setLayoutProperty(animatedParkingLayerId, 'visibility', 'none');
+    }
+}
+
+// 2. Prepare the animated layer (for map reveal chapter)
+async function prepareAnimatedParkingLayer() {
+    if (!map) return;
+    clearOtherParkingVisualizations();
+    await loadAllParkingFeaturesForAnimation();
+
+    if (!map.getSource(animatedParkingSourceId)) {
+        map.addSource(animatedParkingSourceId, {
+            type: 'geojson',
+            data: { type: 'FeatureCollection', features: [] }
+        });
+    } else {
+        map.getSource(animatedParkingSourceId).setData({ type: 'FeatureCollection', features: [] });
+    }
+
+    if (!map.getLayer(animatedParkingLayerId)) {
+        map.addLayer({
+            id: animatedParkingLayerId,
+            type: 'circle',
+            source: animatedParkingSourceId,
+            paint: {
+                'circle-radius': 5,
+                'circle-color': '#E74C3C',
+                'circle-opacity': 0.85,
+                'circle-stroke-width': 0.5,
+                'circle-stroke-color': '#FFFFFF'
+            }
+        });
+    }
+    map.setLayoutProperty(animatedParkingLayerId, 'visibility', 'visible');
+    animatedFeaturesShownCount = 0;
+    currentAnimatedFeaturesList = [];
+}
+
+// 3. Animate parking spots randomly
+async function animateParkingSpotsRandomly() {
+    if (!map) return;
+    await loadAllParkingFeaturesForAnimation();
+    if (!allParkingFeaturesForAnimation || allParkingFeaturesForAnimation.length === 0) {
+        // console.warn("No parking features to animate. Showing all if possible.");
+        ensureAllParkingSpotsVisible();
+        return;
+    }
+
+    if (animationIntervalId) {
+        clearInterval(animationIntervalId);
+    }
+    map.setLayoutProperty(animatedParkingLayerId, 'visibility', 'visible');
+
+    let shuffledFeatures = [...allParkingFeaturesForAnimation];
+    for (let i = shuffledFeatures.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledFeatures[i], shuffledFeatures[j]] = [shuffledFeatures[j], shuffledFeatures[i]];
+    }
+
+    const featuresPerInterval = Math.max(1, Math.floor(shuffledFeatures.length / 150));
+    const intervalDuration = 30;
+
+    animatedFeaturesShownCount = 0;
+    currentAnimatedFeaturesList = [];
+
+    animationIntervalId = setInterval(() => {
+        if (animatedFeaturesShownCount < shuffledFeatures.length) {
+            const batchEndIndex = Math.min(animatedFeaturesShownCount + featuresPerInterval, shuffledFeatures.length);
+            const nextBatch = shuffledFeatures.slice(animatedFeaturesShownCount, batchEndIndex);
+            currentAnimatedFeaturesList.push(...nextBatch);
+
+            if (map.getSource(animatedParkingSourceId)) { // Check if source still exists
+                map.getSource(animatedParkingSourceId).setData({
+                    type: 'FeatureCollection',
+                    features: currentAnimatedFeaturesList
+                });
+            } else { // Source might have been removed by rapid chapter changes
+                clearInterval(animationIntervalId);
+                animationIntervalId = null;
+                return;
+            }
+            animatedFeaturesShownCount = batchEndIndex;
+        } else {
+            clearInterval(animationIntervalId);
+            animationIntervalId = null;
+        }
+    }, intervalDuration);
+}
+
+// 4. Ensure all parking spots are visible on the animated layer
+async function ensureAllParkingSpotsVisible() {
+    if (!map) return;
+    if (animationIntervalId) {
+        clearInterval(animationIntervalId);
+        animationIntervalId = null;
+    }
+    await loadAllParkingFeaturesForAnimation();
+
+    if (allParkingFeaturesForAnimation && allParkingFeaturesForAnimation.length > 0) {
+        if (!map.getSource(animatedParkingSourceId)) {
+             map.addSource(animatedParkingSourceId, {
+                type: 'geojson',
+                data: { type: 'FeatureCollection', features: allParkingFeaturesForAnimation }
+            });
+        } else {
+            map.getSource(animatedParkingSourceId).setData({
+                type: 'FeatureCollection',
+                features: allParkingFeaturesForAnimation
+            });
+        }
+
+        if (!map.getLayer(animatedParkingLayerId)) {
+             map.addLayer({
+                id: animatedParkingLayerId,
+                type: 'circle',
+                source: animatedParkingSourceId,
+                paint: {
+                    'circle-radius': 5,
+                    'circle-color': '#E74C3C',
+                    'circle-opacity': 0.85,
+                    'circle-stroke-width': 0.5,
+                    'circle-stroke-color': '#FFFFFF'
+                }
+            });
+        }
+        map.setLayoutProperty(animatedParkingLayerId, 'visibility', 'visible');
+    }
+    // Do NOT call clearOtherParkingVisualizations here if this layer is meant to persist
+    // and be the primary display of parking spots moving forward.
+    // However, if other visualizations (like showScrollParkingVisualization) are still
+    // meant to take over in subsequent chapters, then this function might need to
+    // hide animatedParkingLayerId and trigger the other visualization.
+    // For now, assuming animatedParkingLayerId persists.
+} 

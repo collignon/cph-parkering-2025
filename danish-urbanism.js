@@ -30,15 +30,6 @@ class DanishUrbanism {
                         <span class="impact-label">Tons CO₂ sparet årligt</span>
                     </div>
                 </div>
-                
-                <div class="paradox-highlight">
-                    <h4>Men hjemme i København...</h4>
-                    <div class="paradox-stats">
-                        <span class="bad-stat">86% tomme private pladser</span>
-                        <span class="bad-stat">19.000kr/plads i skattekroner</span>
-                        <span class="good-stat">20m cykelsti per plads muligt</span>
-                    </div>
-                </div>
             </div>
         `;
     }

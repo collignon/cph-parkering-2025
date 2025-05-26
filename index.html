@@ -9,9 +9,24 @@
     <script src="https://unpkg.com/scrollama"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        :root {
+            --copenhagen-blue: #1e3a8a;
+            --copenhagen-light-blue: #3b82f6;
+            --danish-green: #059669;
+            --problem-red: #dc2626;
+            --warm-amber: #f59e0b;
+            --neutral-dark: #374151;
+            --neutral-light: #f8fafc;
+            --glass-bg: rgba(30, 58, 138, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 0;
+            font-family: 'Source Sans Pro', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.6s ease-in-out;
             font-size: 16px;
             line-height: 1.6;
             color: #333;
@@ -24,6 +39,12 @@
             width: 100vw;
             height: 100vh;
             z-index: 1;
+        }
+
+        /* Hide map during solid background */
+        body.solid-background-active #map {
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
 
         #mapInset {
@@ -45,11 +66,12 @@
         .step {
             padding: 60px 40px;
             margin-bottom: 80vh;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(248, 250, 252, 0.95);
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.1);
             max-width: 600px;
             backdrop-filter: blur(10px);
+            transition: all 0.4s ease-in-out;
         }
 
         /* Extra spacing after the first text box for better reading flow */
@@ -75,28 +97,30 @@
         }
 
         .step.active {
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(248, 250, 252, 0.98);
+            box-shadow: 0 6px 25px rgba(30, 58, 138, 0.2);
         }
 
         .step h3 {
             margin: 0 0 20px 0;
             font-size: 1.8rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--copenhagen-blue);
         }
 
         .step p {
             margin: 0 0 15px 0;
-            color: #555;
+            color: var(--neutral-dark);
         }
 
         .step a {
-            color: #3498db;
+            color: var(--copenhagen-light-blue);
             text-decoration: none;
         }
 
         .step a:hover {
             text-decoration: underline;
+            color: var(--copenhagen-blue);
         }
 
         /* Alignment classes */
@@ -121,7 +145,7 @@
         /* Header and footer */
         #header {
             padding: 60px 40px;
-            background: #2c3e50;
+            background: var(--copenhagen-blue);
             color: white;
             text-align: center;
         }
@@ -147,13 +171,13 @@
 
         #footer {
             padding: 40px;
-            background: #2c3e50;
+            background: var(--copenhagen-blue);
             color: white;
             text-align: center;
         }
 
         #footer a {
-            color: #3498db;
+            color: var(--warm-amber);
         }
 
         /* Image slides */
@@ -174,24 +198,24 @@
         }
 
         .step.image-slide .content {
-            background: rgba(255, 255, 255, 0.95);
-            color: #333;
+            background: rgba(248, 250, 252, 0.95);
+            color: var(--neutral-dark);
             padding: 40px;
             border-radius: 8px;
             max-width: 600px;
             text-align: center;
             backdrop-filter: blur(5px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(30, 58, 138, 0.15);
         }
 
         .step.image-slide h3 {
-            color: #2c3e50;
+            color: var(--copenhagen-blue);
             font-size: 2.2rem;
             margin-bottom: 20px;
         }
 
         .step.image-slide p {
-            color: #555;
+            color: var(--neutral-dark);
             font-size: 1.1rem;
         }
 
@@ -225,25 +249,24 @@
         .step.sticky-graphic .content {
             position: relative;
             z-index: 2;
-            background: rgba(255, 255, 255, 0.95); /* Clean white background */
-            color: #333;
+            background: rgba(248, 250, 252, 0.95);
+            color: var(--neutral-dark);
             padding: 35px 40px;
             border-radius: 12px;
             max-width: 420px;
-            backdrop-filter: none; /* Remove blur */
-            box-shadow: none; /* Remove shadow completely */
-            border: 2px solid rgba(255, 255, 255, 1); /* Solid white border */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 6px 25px rgba(30, 58, 138, 0.15);
         }
 
         .step.sticky-graphic h3 {
-            color: #2c3e50;
+            color: var(--copenhagen-blue);
             font-size: 1.8rem;
             margin-bottom: 15px;
             line-height: 1.2;
         }
 
         .step.sticky-graphic p {
-            color: #444;
+            color: var(--neutral-dark);
             font-size: 0.95rem;
             line-height: 1.5;
             margin-bottom: 12px;
@@ -847,37 +870,131 @@
             transition: opacity 0.5s ease;
         }
 
-        /* Hide map during solid background */
-        body.solid-background-active #map {
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
         /* Custom styles for dark background chapters */
-        #aktuel-belægning-intro.step,
-        #parking-visualization.step, /* In case it ever gets direct text content */
-        #aktuel-belægning-conclusion.step {
+        #aktuel-belægning.step,
+        #kommunale-lejeaftaler.step {
             color: white; /* Default text color for these chapters */
         }
 
-        #aktuel-belægning-intro.step h3,
-        #parking-visualization.step h3,
-        #aktuel-belægning-conclusion.step h3 {
+        #aktuel-belægning.step h3,
+        #kommunale-lejeaftaler.step h3 {
             color: white !important; /* Ensure title is white */
             font-size: 2rem; /* Make title a bit larger */
         }
 
-        #aktuel-belægning-intro.step p,
-        #parking-visualization.step p,
-        #aktuel-belægning-conclusion.step p {
+        #aktuel-belægning.step p,
+        #kommunale-lejeaftaler.step p {
             color: #f0f0f0 !important; /* Slightly off-white for paragraph for softer contrast */
             font-size: 1.1rem; /* Make paragraph text a bit larger */
         }
         
-        #aktuel-belægning-intro.step a,
-        #parking-visualization.step a,
-        #aktuel-belægning-conclusion.step a {
-            color: #7fdbff !important; /* Light blue for links, good on dark backgrounds */
+        #aktuel-belægning.step a,
+        #kommunale-lejeaftaler.step a {
+            color: var(--copenhagen-light-blue) !important;
+        }
+
+        /* Fixed styling for kommunale-lejeaftaler chapter - always consistent */
+        #kommunale-lejeaftaler.step {
+            background: rgba(255, 255, 255, 0.95) !important;
+            color: #2c3e50 !important;
+            padding: 25px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 6px 25px rgba(30, 58, 138, 0.2) !important;
+            backdrop-filter: blur(10px) !important;
+            max-width: 480px !important; /* Reduced from 600px to fit better with chart */
+            margin-left: 5vw !important;
+            margin-right: auto !important;
+            position: relative !important;
+            z-index: 5 !important;
+            transition: none !important; /* No transitions to prevent layout shifts */
+        }
+
+        #kommunale-lejeaftaler.step h3 {
+            color: #2c3e50 !important;
+            margin-bottom: 18px !important;
+            font-size: 1.7rem !important; /* Slightly smaller to fit better */
+        }
+
+        #kommunale-lejeaftaler.step p {
+            color: #34495e !important;
+            line-height: 1.6 !important;
+            font-size: 0.95rem !important; /* Slightly smaller for better fit */
+        }
+
+        #kommunale-lejeaftaler.step a {
+            color: var(--copenhagen-light-blue) !important;
+        }
+
+        /* Fixed styling for aktuel-belægning chapter - now transparent */
+        #aktuel-belægning.step {
+            background: transparent !important; /* Remove background completely */
+            color: white !important; /* White text for dark background */
+            padding: 30px !important;
+            border-radius: 0 !important; /* No border radius needed */
+            box-shadow: none !important; /* No shadow needed */
+            backdrop-filter: none !important; /* No blur needed */
+            max-width: 520px !important;
+            margin-left: 5vw !important; /* Keep left positioning */
+            margin-right: auto !important;
+            margin-bottom: 90vh !important; /* Reduced from 140vh to match better timing */
+            position: relative !important;
+            z-index: 5 !important;
+            transition: none !important;
+        }
+
+        #aktuel-belægning.step h3 {
+            color: white !important; /* Ensure title is white */
+            margin-bottom: 20px !important;
+            font-size: 1.8rem !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important; /* Add subtle shadow for readability */
+        }
+
+        #aktuel-belægning.step p {
+            color: #f0f0f0 !important; /* Light text */
+            line-height: 1.6 !important;
+            font-size: 1rem !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; /* Add subtle shadow for readability */
+        }
+
+        #aktuel-belægning.step a {
+            color: var(--warm-amber) !important; /* Amber for links on dark background */
+        }
+
+        /* Ensure hvad-tager-parkering has full width and proper spacing */
+        #hvad-tager-parkering.step {
+            background: rgba(248, 250, 252, 0.95) !important;
+            max-width: 700px !important; /* Slightly wider for better readability */
+            margin-left: auto !important;
+            margin-right: auto !important;
+            margin-top: 60vh !important; /* Add top margin for visual separation */
+            padding: 50px 40px !important; /* More generous padding */
+            border-radius: 12px !important;
+            box-shadow: 0 6px 25px rgba(30, 58, 138, 0.2) !important;
+            backdrop-filter: blur(10px) !important;
+            margin-bottom: 120vh !important; /* Extra space after this chapter */
+        }
+
+        #hvad-tager-parkering.step h3 {
+            color: #2c3e50 !important;
+            margin-bottom: 25px !important;
+            font-size: 1.9rem !important;
+            text-align: center !important;
+        }
+
+        #hvad-tager-parkering.step p {
+            color: #34495e !important;
+            line-height: 1.7 !important;
+            font-size: 1.05rem !important;
+            text-align: center !important;
+        }
+
+        #hvad-tager-parkering.step a {
+            color: var(--copenhagen-light-blue) !important;
+        }
+
+        /* Improved transitions for chapters affected by chart */
+        #vesterbro-parking.step {
+            transition: all 0.6s ease-in-out;
         }
 
         /* Add more bottom padding to the intro text chapter before the visualization */
@@ -954,11 +1071,182 @@
         #transformation-results.step {
             margin-bottom: 150vh; /* More scroll space after the Paris sequence */
         }
+
+        /* Sticky cost chart container */
+        #sticky-cost-chart-container {
+            position: fixed;
+            right: 3%;
+            top: 15vh;
+            width: 40%;
+            max-width: 420px;
+            background: var(--glass-bg);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(30, 58, 138, 0.25);
+            z-index: 10;
+            display: none;
+            backdrop-filter: blur(15px);
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        #sticky-cost-chart-container h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.4rem;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        #sticky-cost-chart-container .chart-note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        /* Parking visualization sticky container - transparent like aktuel-belægning text */
+        #sticky-parking-viz-container {
+            position: fixed;
+            right: 2%; /* Much closer to the edge */
+            top: 18vh; /* Slightly higher to better align */
+            width: 32%; /* Narrower container width */
+            max-width: 350px; /* Smaller max-width for tighter fit */
+            background: transparent !important; /* Remove background completely */
+            padding: 18px; /* Less padding around the content */
+            border-radius: 0 !important; /* No border radius needed */
+            box-shadow: none !important; /* No shadow needed */
+            z-index: 10;
+            display: none;
+            backdrop-filter: none !important; /* No blur needed */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #sticky-parking-viz-container h3 {
+            margin: 0 0 6px 0; /* Less margin for tighter layout */
+            font-size: 1.2rem; /* Slightly smaller title */
+            color: white !important; /* White text for dark background */
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important; /* Add shadow for readability */
+        }
+
+        /* Make sure all content in the parking viz container is white on dark background */
+        #sticky-parking-viz-container * {
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+        }
+
+        /* Smooth transitions for chapters with parking visualization */
+        .step.with-parking-viz {
+            transition: margin-left 0.5s ease-in-out, margin-right 0.5s ease-in-out, max-width 0.5s ease-in-out;
+        }
+        
+        /* Ensure consistent spacing for chapters that might have parking viz */
+        #aktuel-belægning.step,
+        #hvad-tager-parkering.step {
+            transition: margin-left 0.5s ease-in-out, margin-right 0.5s ease-in-out, max-width 0.5s ease-in-out;
+        }
+
+        /* Fixed styling for Paris section chapters - add dark background for readability */
+        #arrogance-intro.step,
+        #arrogance-colors.step,
+        #arrogance-reality.step {
+            background: transparent !important; /* No background - transparent over image */
+            color: #2c3e50 !important; /* Dark blue text like other sections */
+            padding: 35px !important;
+            border-radius: 0 !important; 
+            box-shadow: none !important; 
+            backdrop-filter: none !important; 
+            max-width: 520px !important;
+            margin-left: 5vw !important; /* Position on left */
+            margin-right: auto !important;
+            position: relative !important;
+            z-index: 5 !important;
+            transition: none !important;
+        }
+
+        #arrogance-intro.step h3,
+        #arrogance-colors.step h3,
+        #arrogance-reality.step h3 {
+            color: #2c3e50 !important; /* Dark blue for headings */
+            margin-bottom: 20px !important;
+            font-size: 1.8rem !important;
+            text-shadow: none !important; /* Remove shadows */
+        }
+
+        #arrogance-intro.step p,
+        #arrogance-colors.step p,
+        #arrogance-reality.step p {
+            color: #34495e !important; /* Slightly lighter dark blue for text */
+            line-height: 1.6 !important;
+            font-size: 1rem !important;
+            text-shadow: none !important; /* Remove shadows */
+        }
+
+        #arrogance-intro.step a,
+        #arrogance-colors.step a,
+        #arrogance-reality.step a {
+            color: var(--copenhagen-light-blue) !important; /* Use site's link color */
+            text-shadow: none !important; /* Remove shadows */
+        }
+
+        /* Fixed styling for transformation section - semi-transparent background for map */
+        #transformation-intro.step,
+        #transformation-hidalgo.step,
+        #transformation-results.step {
+            background: rgba(0, 0, 0, 0.75) !important; /* Semi-transparent dark background for map */
+            color: white !important; 
+            padding: 35px !important;
+            border-radius: 12px !important; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important; 
+            backdrop-filter: blur(5px) !important; 
+            max-width: 520px !important;
+            margin-left: 5vw !important; 
+            margin-right: auto !important;
+            position: relative !important;
+            z-index: 5 !important;
+            transition: none !important;
+        }
+
+        #transformation-intro.step h3,
+        #transformation-hidalgo.step h3,
+        #transformation-results.step h3 {
+            color: white !important; 
+            margin-bottom: 20px !important;
+            font-size: 1.8rem !important;
+            text-shadow: none !important; /* No shadow needed with dark background */
+        }
+
+        #transformation-intro.step p,
+        #transformation-hidalgo.step p,
+        #transformation-results.step p {
+            color: #f0f0f0 !important; 
+            line-height: 1.6 !important;
+            font-size: 1rem !important;
+            text-shadow: none !important; /* No shadow needed with dark background */
+        }
+
+        #transformation-intro.step a,
+        #transformation-hidalgo.step a,
+        #transformation-results.step a {
+            color: var(--warm-amber) !important; 
+        }
     </style>
 </head>
 <body>
     <div id="sticky-paris-image-container" style="display: none; position: fixed; right: 5%; /* Changed from left */ top: 20vh; width: 40%; max-width: 500px; z-index: 10;">
         <img src="./assets/Paris is Looking Great.webp" alt="Paris Transformation" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+    </div>
+    
+    <div id="sticky-cost-chart-container" style="display: none; position: fixed; right: 5%; top: 15vh; width: 35%; max-width: 400px; z-index: 10;">
+        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.15);">
+            <h4 style="margin: 0 0 20px 0; color: #2c3e50; text-align: center; font-size: 1.3rem;">Hvad koster parkering?</h4>
+            <div id="cost-chart" style="margin-bottom: 15px;"></div>
+            <p style="margin: 0; font-size: 0.9rem; color: #666; text-align: center; font-style: italic;">Kommunen betaler 8x mere end borgerne</p>
+        </div>
+    </div>
+
+    <div id="sticky-parking-viz-container" style="display: none; position: fixed; right: 5%; top: 10vh; width: 40%; max-width: 500px; z-index: 10;">
+        <div id="parking-viz-content"></div>
     </div>
     <div id="map"></div>
     <div id="story"></div>
@@ -1154,6 +1442,13 @@
         }
     }
 
+    // Set initial state based on first chapter
+    const firstChapter = config.chapters[0];
+    if (firstChapter.solidBackground) {
+        document.body.classList.add('solid-background-active');
+        document.body.style.backgroundColor = firstChapter.solidBackground;
+    }
+
     var map = new mapboxgl.Map({
         container: 'map',
         style: config.style,
@@ -1172,36 +1467,39 @@
 
     // Function to show the sticky Paris image
     function showParisStickyImage() {
-        document.getElementById('sticky-paris-image-container').style.display = 'block';
+        const container = document.getElementById('sticky-paris-image-container');
+        if (!container) return;
+        
+        // Set flag to track visibility
+        parisStickyVisible = true;
+        
+        container.style.display = 'block';
+        container.style.opacity = '1';
         document.getElementById('map').style.opacity = '0'; // Hide map during this sequence
 
-        const chapterIds = ['transformation-intro', 'transformation-hidalgo', 'transformation-results'];
-        chapterIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                // Text on the left, image on the right (image is 40vw wide, right: 5vw)
-                el.style.marginLeft = '5vw'; // Use the lefty class margin or set explicitly
-                el.style.marginRight = 'auto'; // Ensure it doesn't try to go to the right
-                el.style.maxWidth = 'calc(100vw - 40vw - 5vw - 5vw - 2vw - 40px)'; // vp width - img width - img right margin - text left margin - gap - text padding
-            }
-        });
+        // Don't modify transformation chapter styling - they have fixed CSS now
+        // The fixed CSS already positions them at margin-left: 5vw which gives space for the image
     }
 
     // Function to hide the sticky Paris image
     function hideParisStickyImage() {
-        document.getElementById('sticky-paris-image-container').style.display = 'none';
-        document.getElementById('map').style.opacity = '1'; // Show map again
-
-        const chapterIds = ['transformation-intro', 'transformation-hidalgo', 'transformation-results'];
-        chapterIds.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.style.marginLeft = ''; // Reset margin to allow class-based alignment to take over
-                el.style.marginRight = '';
-                el.style.maxWidth = '';   // Reset max-width
-            }
-        });
-        map.resize();
+        const container = document.getElementById('sticky-paris-image-container');
+        if (!container || !parisStickyVisible) return;
+        
+        // Set flag to track visibility
+        parisStickyVisible = false;
+        
+        // Quick fade out like the cost chart and parking viz
+        container.style.opacity = '0';
+        container.style.transition = 'opacity 0.3s ease-out';
+        
+        setTimeout(() => {
+            container.style.display = 'none';
+            container.style.opacity = '1'; // Reset for next time
+            container.style.transition = ''; // Reset transition
+            document.getElementById('map').style.opacity = '1'; // Show map again
+            map.resize();
+        }, 300);
     }
 
     // instantiate the scrollama
@@ -1332,10 +1630,16 @@
             if (chapter.solidBackground) {
                 document.body.classList.add('solid-background-active');
                 document.body.style.setProperty('--solid-bg-color', chapter.solidBackground);
-                document.body.style.backgroundColor = chapter.solidBackground;
+                // Use smooth transition instead of instant change
+                setTimeout(() => {
+                    document.body.style.backgroundColor = chapter.solidBackground;
+                }, 50);
             } else {
                 document.body.classList.remove('solid-background-active');
-                document.body.style.backgroundColor = '';
+                // Use smooth transition instead of instant change
+                setTimeout(() => {
+                    document.body.style.backgroundColor = '';
+                }, 50);
             }
             
             // Check if we're in the arrogance sticky graphic sequence
@@ -1505,6 +1809,274 @@
     // Callback function for Danish urbanism achievements
     function showDanishUrbanism() {
         danishUrbanism.addToChapter('dansk-paradoks');
+    }
+
+    // Function to prepare background for smoother transitions
+    function prepareNextChapterBackground() {
+        // Add a subtle pre-transition to make background changes smoother
+        const body = document.body;
+        body.style.transition = 'background-color 0.8s ease-in-out';
+        
+        // Pre-warm the background color slightly
+        setTimeout(() => {
+            body.style.backgroundColor = 'rgba(52, 73, 94, 0.3)';
+        }, 100);
+        
+        // Reset after a moment
+        setTimeout(() => {
+            body.style.backgroundColor = '';
+            body.style.transition = '';
+        }, 1500);
+    }
+
+    // Function to prepare dark background transition for parking visualization
+    function prepareDarkBackground() {
+        const body = document.body;
+        body.style.transition = 'background-color 0.6s ease-in-out';
+        
+        // Start transitioning to dark background early
+        setTimeout(() => {
+            body.style.backgroundColor = 'rgba(30, 58, 138, 0.85)';
+        }, 200);
+    }
+
+    // Function to complete dark background transition
+    function completeDarkBackground() {
+        const body = document.body;
+        body.style.backgroundColor = '#1e3a8a'; // Full dark blue
+    }
+
+    // Function to clear dark background early
+    function clearDarkBackground() {
+        const body = document.body;
+        body.style.transition = 'background-color 0.5s ease-out';
+        
+        // Start clearing background early
+        setTimeout(() => {
+            body.style.backgroundColor = '';
+        }, 100);
+        
+        // Reset transition
+        setTimeout(() => {
+            body.style.transition = '';
+        }, 600);
+    }
+
+    // Flag to ensure cost chart animation only happens once
+    let costChartAnimated = false;
+
+    // Flag to ensure parking visualization only shows/hides properly
+    let parkingVizVisible = false;
+
+    // Flag to ensure Paris sticky image only shows/hides properly
+    let parisStickyVisible = false;
+
+    // Function to show the sticky cost comparison chart
+    function showCostChart() {
+        const chartContainer = document.getElementById('sticky-cost-chart-container');
+        if (!chartContainer) return;
+        
+        chartContainer.style.display = 'block';
+        chartContainer.style.opacity = '1';
+        
+        // Don't modify the kommunale-lejeaftaler chapter styling - it has fixed CSS
+        // Just ensure the chart doesn't overlap by positioning it correctly
+        
+        // Also adjust vesterbro-parking chapter for consistency when chart is visible
+        const vesterbro = document.getElementById('vesterbro-parking');
+        if (vesterbro) {
+            vesterbro.style.marginLeft = '5vw';
+            vesterbro.style.marginRight = 'auto';
+            vesterbro.style.maxWidth = 'calc(50vw - 40px)';
+            vesterbro.style.position = 'relative';
+            vesterbro.style.zIndex = '5';
+        }
+        
+        // Only animate if it hasn't been animated before
+        if (!costChartAnimated) {
+            costChartAnimated = true;
+            
+            // Create minimal proportional bar chart
+            const chartDiv = document.getElementById('cost-chart');
+            chartDiv.innerHTML = '';
+            
+            const driverPays = 2375;
+            const taxpayerSubsidy = 19000;
+            const totalCost = driverPays + taxpayerSubsidy;
+            
+            const driverPercentage = (driverPays / totalCost) * 100;
+            const taxpayerPercentage = (taxpayerSubsidy / totalCost) * 100;
+            
+            // Main container
+            const mainContainer = document.createElement('div');
+            mainContainer.style.cssText = 'margin-bottom: 20px;';
+            
+            // Single bar container
+            const barContainer = document.createElement('div');
+            barContainer.style.cssText = 'position: relative; height: 80px; background: var(--glass-bg); border-radius: 12px; overflow: hidden; backdrop-filter: blur(5px); margin-bottom: 20px;';
+            
+            // Driver payment section (tiny)
+            const driverSection = document.createElement('div');
+            driverSection.style.cssText = `
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(135deg, var(--danish-green), var(--warm-amber));
+                transition: width 2.5s ease;
+                border-radius: 12px 0 0 12px;
+            `;
+            
+            // Taxpayer subsidy section (huge)
+            const taxpayerSection = document.createElement('div');
+            taxpayerSection.style.cssText = `
+                position: absolute;
+                right: 0;
+                top: 0;
+                height: 100%;
+                width: 0%;
+                background: linear-gradient(135deg, var(--problem-red), #b91c1c);
+                transition: width 2.5s ease 0.8s;
+                border-radius: 0 12px 12px 0;
+            `;
+            
+            // Labels container - simplified
+            const labelsContainer = document.createElement('div');
+            labelsContainer.style.cssText = 'display: flex; justify-content: space-between; align-items: center;';
+            
+            // Driver label - minimal
+            const driverLabel = document.createElement('div');
+            driverLabel.style.cssText = 'color: var(--danish-green); font-weight: 700; font-size: 1rem;';
+            driverLabel.textContent = `Bilister: ${driverPays.toLocaleString('da-DK')} kr`;
+            
+            // VS separator
+            const separator = document.createElement('div');
+            separator.style.cssText = 'color: rgba(255,255,255,0.7); font-weight: 300; font-size: 0.9rem;';
+            separator.textContent = 'vs';
+            
+            // Taxpayer label - minimal
+            const taxpayerLabel = document.createElement('div');
+            taxpayerLabel.style.cssText = 'color: var(--problem-red); font-weight: 700; font-size: 1rem; text-align: right;';
+            taxpayerLabel.textContent = `Skatteydere: ${taxpayerSubsidy.toLocaleString('da-DK')} kr`;
+            
+            // Bottom impact note - very minimal
+            const impactNote = document.createElement('div');
+            impactNote.innerHTML = '<strong>8x</strong> forskel';
+            impactNote.style.cssText = 'color: rgba(255,255,255,0.95); text-align: center; margin-top: 15px; font-size: 1.1rem; font-weight: 600;';
+            
+            // Assemble elements
+            labelsContainer.appendChild(driverLabel);
+            labelsContainer.appendChild(separator);
+            labelsContainer.appendChild(taxpayerLabel);
+            
+            barContainer.appendChild(driverSection);
+            barContainer.appendChild(taxpayerSection);
+            
+            mainContainer.appendChild(barContainer);
+            mainContainer.appendChild(labelsContainer);
+            mainContainer.appendChild(impactNote);
+            
+            chartDiv.appendChild(mainContainer);
+            
+            // Trigger animation only once
+            setTimeout(() => {
+                driverSection.style.width = `${driverPercentage}%`;
+                taxpayerSection.style.width = `${taxpayerPercentage}%`;
+            }, 400);
+        }
+    }
+
+    // Function to hide the sticky cost comparison chart
+    function hideCostChart() {
+        const chartContainer = document.getElementById('sticky-cost-chart-container');
+        if (!chartContainer) return;
+        
+        // Quick fade out
+        chartContainer.style.opacity = '0';
+        chartContainer.style.transition = 'opacity 0.3s ease-out';
+        
+        setTimeout(() => {
+            chartContainer.style.display = 'none';
+            chartContainer.style.opacity = '1'; // Reset for next time
+            chartContainer.style.transition = ''; // Reset transition
+        }, 300);
+        
+        // Don't modify kommunale-lejeaftaler styling - it has fixed CSS now
+        
+        // Reset vesterbro-parking chapter styling
+        const vesterbro = document.getElementById('vesterbro-parking');
+        if (vesterbro) {
+            vesterbro.style.transition = 'all 0.3s ease-out';
+            vesterbro.style.marginLeft = '';
+            vesterbro.style.marginRight = '';
+            vesterbro.style.maxWidth = '';
+            vesterbro.style.position = '';
+            vesterbro.style.zIndex = '';
+        }
+    }
+
+    // Function to show the sticky parking visualization
+    function showParkingVisualization() {
+        const container = document.getElementById('sticky-parking-viz-container');
+        if (!container) return;
+        
+        // Set flag to track visibility
+        parkingVizVisible = true;
+        
+        container.style.display = 'block';
+        container.style.opacity = '1';
+        
+        // Initialize the parking visualization in the container
+        const vizContainer = document.getElementById('parking-viz-content');
+        if (vizContainer && typeof parkingVisualization !== 'undefined' && parkingVisualization.createVisualization) {
+            // Clear any existing content
+            vizContainer.innerHTML = '';
+            parkingVisualization.createVisualization(vizContainer);
+        }
+    }
+
+    // Function to hide the sticky parking visualization
+    function hideParkingVisualization() {
+        const container = document.getElementById('sticky-parking-viz-container');
+        if (!container || !parkingVizVisible) return;
+        
+        // Set flag to track visibility
+        parkingVizVisible = false;
+        
+        // Quick fade out like the cost chart
+        container.style.opacity = '0';
+        container.style.transition = 'opacity 0.3s ease-out';
+        
+        setTimeout(() => {
+            container.style.display = 'none';
+            container.style.opacity = '1'; // Reset for next time
+            container.style.transition = ''; // Reset transition
+            
+            // Clear the visualization content
+            const vizContainer = document.getElementById('parking-viz-content');
+            if (vizContainer) {
+                vizContainer.innerHTML = '';
+            }
+        }, 300);
+    }
+
+    // Function to clear the arrogance sequence when scrolling back
+    function clearArroganceSequence() {
+        // Remove sticky sequence classes
+        document.body.classList.remove('sticky-sequence-active', 'arrogance-sequence');
+        
+        // Clear any background images or overlays
+        const stickyOverlay = document.querySelector('.sticky-graphic-overlay');
+        if (stickyOverlay) {
+            stickyOverlay.style.opacity = '0';
+            stickyOverlay.style.transition = 'opacity 0.3s ease-out';
+            setTimeout(() => {
+                stickyOverlay.style.display = 'none';
+                stickyOverlay.style.opacity = '1';
+                stickyOverlay.style.transition = '';
+            }, 300);
+        }
     }
     </script>
 

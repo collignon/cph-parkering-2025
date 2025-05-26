@@ -12,11 +12,30 @@ var config = {
     footer: 'Kilder: <a href="https://www.kk.dk/sites/default/files/agenda/4c2ace22-b3ad-4eae-8a00-7fea405ffd51/4d51992b-c2d0-4888-b780-ce0a37b99763-bilag-4_0.pdf">Københavns Kommune</a> | <a href="https://www.kk.dk/borger/parkering-trafik-og-veje/parkering/her-maa-du-parkere-med-din-beboerlicens/find-prisen-paa-din-beboerlicens">Beboerlicens priser</a>',
     chapters: [
         {
-            id: 'intro',
-            alignment: 'left',
+            id: 'intro-text-on-white',
+            alignment: 'center',
             hidden: false,
             title: 'Problemet med parkering i København',
-            description: 'Os, der bor her i København vil ikke betale for parkeringspladser - og Pernille Rosenkrantz-Theil vil gerne bruge endnu flere af dine hårdtjente penge for at konkurrere med de private tilbud, der i dag står tomme.',
+            description: '<div style="height: 2vh;"></div>Alle der kører bil i København kender frustrationen: At køre rundt i 15 minutter for at finde en parkeringsplads. At stresse over at komme for sent. At betale dyrt for parkering, når man endelig finder det.<br><br>Det er forståeligt at folk er sure. Men hvad nu hvis problemet ikke er mangel på pladser, men at vi ikke bruger dem vi har?<br><br>Socialdemokratiets overborgmesterkandidat Pernille Rosenkrantz-Theil vil løse problemet ved at skaffe <em>"flere parkeringspladser - ikke færre"</em> til københavnere. Hun mener at elektriske biler løser miljøproblemerne, så vi kan fokusere på at gøre det nemmere at have bil i byen.<br><br>Men inden vi bruger flere skattemidler på parkering, lad os se på hvad der faktisk sker med de parkeringspladser, vi allerede har.<div style="height: 35vh;"></div>',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 11,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            solidBackground: '#FFFFFF',
+            callback: '',
+            onChapterEnter: ['hideAnimatedParkingLayer'],
+            onChapterExit: []
+        },
+        {
+            id: 'intro-question-on-map',
+            alignment: 'left',
+            hidden: false,
+            title: '',
+            description: '</div>Mens byens politikere diskuterer nye parkeringsløsninger, lad os tage en tur rundt i byen og se, hvad der egentlig sker med parkering i København - og hvad det koster os alle sammen.',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 11,
@@ -26,15 +45,34 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
+            onChapterEnter: ['hideAnimatedParkingLayer'],
             onChapterExit: []
+        },
+
+        {
+            id: 'map-animation-caption',
+            alignment: 'left',
+            hidden: false,
+            title: 'Parkeringspladserne i København',
+            description: 'Her er et overblik over de private parkeringsanlæg, som data er tilgængelig for. Mange står tomme store dele af tiden.',
+            location: {
+                center: [12.5683, 55.6761],
+                zoom: 11,
+                pitch: 0,
+                bearing: 0
+            },
+            mapAnimation: 'flyTo',
+            rotateAnimation: false,
+            callback: '',
+            onChapterEnter: ['ensureAllParkingSpotsVisible'],
+            onChapterExit: ['hideAnimatedParkingLayer']
         },
         {
             id: 'belægningsgrad',
             alignment: 'left',
             hidden: false,
             title: 'Lav belægningsgrad i private anlæg',
-            description: 'Man kunne jo tro, at hun havde læst hvad kommunen har skrevet tidligere om parkeringsforholdene. Fx stod der i parkeringsredegørelsen fra 2018:<br><br><em>"Således ligger belægningsgraderne i de private anlæg med offentlig adgang på mellem 60-70 % om dagen og er sjældent over 20 % om natten."</em><br><br>Kilde: <a href="https://www.kk.dk/sites/default/files/agenda/4c2ace22-b3ad-4eae-8a00-7fea405ffd51/4d51992b-c2d0-4888-b780-ce0a37b99763-bilag-4_0.pdf">Parkeringsredegørelse 2018</a>',
+            description: 'Man kunne jo tro, at Rosenkrantz-Theil havde læst hvad kommunen har skrevet tidligere om parkeringsforholdene. Fx stod der i parkeringsredegørelsen fra 2018:<br><br><em>"Således ligger belægningsgraderne i de private anlæg med offentlig adgang på mellem 60-70 % om dagen og er sjældent over 20 % om natten."</em><br><br>Kilde: <a href="https://www.kk.dk/sites/default/files/agenda/4c2ace22-b3ad-4eae-8a00-7fea405ffd51/4d51992b-c2d0-4888-b780-ce0a37b99763-bilag-4_0.pdf">Parkeringsredegørelse 2018</a>',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 12,
@@ -69,10 +107,10 @@ var config = {
         },
         {
             id: 'kommunale-lejeaftaler',
-            alignment: 'right',
+            alignment: 'left',
             hidden: false,
-            title: 'Kommunen lejer allerede pladser',
-            description: 'Endnu mere underligt, kommunerne lejer pt. over 2100 pladser fra nogle af disse anlæg.<br><br>Bare rolig, det koster kun gns. 19.000kr om året per plads, hvilket er kun ca. 8x så meget, som den gns. beboerlicensejer betaler til kommunen.',
+            title: 'Skatteyderne betaler regningen',
+            description: 'Kommunen lejer over 2.100 parkeringspladser fra private anlæg og betaler <strong>19.000 kr årligt per plads</strong> - med skatteydernes penge.<br><br>Til sammenligning betaler en beboer kun 2.375 kr om året for en parkeringslicens.<br><br><strong>Resultatet:</strong> Skatteyderne subsidierer dyr parkering med 8x prisen, mens de få der faktisk bruger pladserne betaler næsten intet.',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 13,
@@ -82,8 +120,9 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
-            onChapterExit: []
+            onChapterEnter: ['showCostChart'],
+            onChapterExit: ['hideCostChart'],
+            solidBackground: '#34495e'
         },
         {
             id: 'vesterbro-parking',
@@ -100,7 +139,7 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
+            onChapterEnter: ['prepareDarkBackground'],
             onChapterExit: []
         },
         {
@@ -160,11 +199,11 @@ var config = {
             onChapterExit: []
         },
         {
-            id: 'aktuel-belægning-intro',
+            id: 'aktuel-belægning',
             alignment: 'center',
             hidden: false,
-            title: 'Aktuel belægning: Kun 14%',
-            description: 'Husker du de 2.100 parkeringspladser som kommunen lejer fra private anlæg for 19.000 kr per plads om året?<br><br>En opgørelse fra d. 7. maj i år viser noget chokerende: <strong>Af de første 1.000 lejede pladser bruger borgerne kun 14% af dem.</strong>',
+            title: 'Skatteyderne betaler for tomme pladser',
+            description: 'Kommunen lejer 2.100 parkeringspladser fra private anlæg for <strong>19.000 kr per plads</strong> om året.<br><br>En opgørelse fra maj 2025 viser: <strong>Kun 14% af de første 1.000 lejede pladser bliver brugt.</strong><br><br><strong>86% står tomme</strong> - mens kommunen samtidig vil leje endnu flere.<br><br><strong>Hvad koster denne ineffektivitet?</strong><br>• 40 millioner kr årligt på lejede pladser<br>• 19.000 kr per plads vs. 2.375 kr for beboerlicens<br>• 8x højere pris betalt af skatteyderne<br><br>Kilde: <a href="https://www.kk.dk/sites/default/files/2025-05/07.05.25%20-%20Orienteringsnotat%20om%20Benyttelsen%20af%20de%20lejede%20parkeringspladser%20i%20private%20anl%C3%A6g.pdf">Orienteringsnotat om benyttelsen</a>',
             location: {
                 center: [12.5683, 55.6761],
                 zoom: 11,
@@ -174,46 +213,8 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
-            onChapterExit: [],
-            solidBackground: '#2c3e50'
-        },
-        {
-            id: 'parking-visualization',
-            alignment: 'center',
-            hidden: false,
-            title: '',
-            description: '',
-            location: {
-                center: [12.5683, 55.6761],
-                zoom: 11,
-                pitch: 0,
-                bearing: 0
-            },
-            mapAnimation: 'flyTo',
-            rotateAnimation: false,
-            callback: 'showScrollParkingVisualization',
-            onChapterEnter: [],
-            onChapterExit: [],
-            solidBackground: '#2c3e50'
-        },
-        {
-            id: 'aktuel-belægning-conclusion',
-            alignment: 'center',
-            hidden: false,
-            title: '',
-            description: 'Det betyder at <strong>86% af de pladser vi betaler for står tomme</strong> - mens kommunen samtidig vil bruge endnu flere skattemidler på at leje flere pladser.<br><br>Hvad koster denne ineffektivitet samfundet?<br><br>Kilde: <a href="https://www.kk.dk/sites/default/files/2025-05/07.05.25%20-%20Orienteringsnotat%20om%20Benyttelsen%20af%20de%20lejede%20parkeringspladser%20i%20private%20anl%C3%A6g.pdf">Orienteringsnotat om benyttelsen</a>',
-            location: {
-                center: [12.5683, 55.6761],
-                zoom: 11,
-                pitch: 0,
-                bearing: 0
-            },
-            mapAnimation: 'flyTo',
-            rotateAnimation: false,
-            callback: '',
-            onChapterEnter: [],
-            onChapterExit: ['cleanupScrollParkingVisualization'],
+            onChapterEnter: ['completeDarkBackground', 'showParkingVisualization'],
+            onChapterExit: ['hideParkingVisualization'],
             solidBackground: '#2c3e50'
         },
         {
@@ -231,7 +232,7 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: ['initializeSpaceAlternativesDisplay', 'hvad-tager-parkering'],
+            onChapterEnter: ['clearDarkBackground', 'initializeSpaceAlternativesDisplay', 'hvad-tager-parkering'],
             onChapterExit: []
         },
         {
@@ -339,8 +340,8 @@ var config = {
             mapAnimation: 'flyTo',
             rotateAnimation: false,
             callback: '',
-            onChapterEnter: [],
-            onChapterExit: [],
+            onChapterEnter: ['hideParisStickyImage'],
+            onChapterExit: ['clearArroganceSequence'],
             backgroundImage: './assets/Paris 1 by Mikael Colville Andersen.jpg',
             stickyGraphic: true
         },
@@ -453,24 +454,6 @@ var config = {
             onChapterExit: []
         },
         {
-            id: 'cph-pause-before-nyc',
-            alignment: 'left',
-            hidden: false,
-            title: '',
-            description: '<p style="height: 50vh;"></p>',
-            location: {
-                center: [12.5683, 55.6761],
-                zoom: 12,
-                pitch: 0,
-                bearing: 0
-            },
-            mapAnimation: 'flyTo',
-            rotateAnimation: false,
-            callback: '',
-            onChapterEnter: [],
-            onChapterExit: []
-        },
-        {
             id: 'export-nyc',
             alignment: 'center',
             hidden: false,
@@ -495,7 +478,7 @@ var config = {
             alignment: 'center',
             hidden: false,
             title: 'Barcelona: Superblocks',
-            description: 'Barcelonas superblocks bygger på danske principper om at prioritere mennesker over biler. Salvador Rueda udviklede konceptet baseret på Jan Gehls teorier og Jane Jacobs\' ideer.<br><br><strong>Resultatet:</strong> 21 kvadratkilometer bilbelagt areal omdannet til offentligt rum for mennesker.<br><br>Som beskrevet på [gabarcelona.com](https://www.gabarcelona.com/blog/superblocks/): "Superblocks follow Jacobs\' theoretical framework in most of their guidelines" og implementerer Gehls "soft edges" principper.',
+            description: 'Barcelonas superblocks bygger på danske principper om at prioritere mennesker over biler. Salvador Rueda udviklede konceptet baseret på Jan Gehls teorier og Jane Jacobs\' ideer.<br><br><strong>Resultatet:</strong> 21 kvadratkilometer bilbelagt areal omdannet til offentligt rum for mennesker.<br><br>Som beskrevet på <a href="https://www.gabarcelona.com/blog/superblocks/" target="_blank">gabarcelona.com</a>: "Superblocks follow Jacobs\' theoretical framework in most of their guidelines" og implementerer Gehls "soft edges" principper.',
             location: {
                 center: [2.1734, 41.3851],
                 zoom: 11,
@@ -515,7 +498,7 @@ var config = {
             alignment: 'center',
             hidden: false,
             title: 'Bogotá: Ciclovía',
-            description: 'Bogotás Ciclovía - verdens største bilhegnsdag - er baseret på dansk cykelkultur og filozofi. Hver søndag lukkes 120 km veje for biler.<br><br><strong>50 års succes:</strong> Over 1,5 millioner borgere deltager hver søndag. Konceptet er nu exporteret til 400+ byer verden over.<br><br>Som [World Economic Forum](https://www.weforum.org/stories/2024/11/50-years-ciclovia-open-streets-cycling-cars/) beskriver: Ciclovía demonstrerer hvordan byer kan prioritere mennesker over maskiner - en kerneværdi fra dansk byplanlægning.',
+            description: 'Bogotás Ciclovía - verdens største bilhegnsdag - er baseret på dansk cykelkultur og filozofi. Hver søndag lukkes 120 km veje for biler.<br><br><strong>50 års succes:</strong> Over 1,5 millioner borgere deltager hver søndag. Konceptet er nu exporteret til 400+ byer verden over.<br><br>Som <a href="https://www.weforum.org/stories/2024/11/50-years-ciclovia-open-streets-cycling-cars/" target="_blank">World Economic Forum</a> beskriver: Ciclovía demonstrerer hvordan byer kan prioritere mennesker over maskiner - en kerneværdi fra dansk byplanlægning.',
             location: {
                 center: [-74.0721, 4.7110],
                 zoom: 11,
@@ -535,7 +518,7 @@ var config = {
             alignment: 'center',
             hidden: false,
             title: 'Melbourne: Laneways Revival',
-            description: 'Jan Gehl designede Melbournes transformation fra bilorienteret by til fodgængervenliges centrum. Hans arbejde med laneways skabte "verdens mest livable city".<br><br><strong>Før Gehl:</strong> Døde gader efter kontortid<br><strong>Efter Gehl:</strong> Pulserende byliv 24/7<br><br>Som beskrevet i [The Discourse](https://thediscourse.ca/scarborough/melbourne-transformed-tiny-laneways-pedestrian-mecca): Melbournes transformation fra "tiny laneways to pedestrian mecca" byggede på danske principper om skala, liv og menneskecentreret design.',
+            description: 'Jan Gehl designede Melbournes transformation fra bilorienteret by til fodgængervenliges centrum. Hans arbejde med laneways skabte "verdens mest livable city".<br><br><strong>Før Gehl:</strong> Døde gader efter kontortid<br><strong>Efter Gehl:</strong> Pulserende byliv 24/7<br><br>Som beskrevet i <a href="https://thediscourse.ca/scarborough/melbourne-transformed-tiny-laneways-pedestrian-mecca" target="_blank">The Discourse</a>: Melbournes transformation fra "tiny laneways to pedestrian mecca" byggede på danske principper om skala, liv og menneskecentreret design.',
             location: {
                 center: [144.9631, -37.8136],
                 zoom: 11,
@@ -552,15 +535,15 @@ var config = {
         },
         {
             id: 'dansk-paradoks',
-            alignment: 'center',
+            alignment: 'left',
             hidden: false,
             title: 'Det danske paradoks',
-            description: 'Vi eksporterer løsninger mod bilernes dominans til hele verden. Men hjemme accepterer vi at:<br><br>• 86% af private parkeringspladser står tomme<br>• Skatteydere betaler 19.000kr årligt per leasede plads<br>• Hver parkeringsplads kunne være 20m cykelsti<br><br><strong>Hvorfor fører vi ikke an med markedsbaserede parkeringsløsninger?</strong>',
+            description: 'Vi eksporterer løsninger mod bilernes dominans til hele verden. Men hjemme accepterer vi at:<br><br>• 86% af private parkeringspladser står tomme<br>• Skatteydere betaler 19.000kr årligt per leasede plads<br>• Hver parkeringsplads kunne være 20m cykelsti<br><br><strong>Hvorfor fører vi ikke an med markedsbaserede parkeringsløsninger?</strong><br><br><div style="height: 5vh;"></div>',
             location: {
                 center: [12.5683, 55.6761],
-                zoom: 12,
-                pitch: 0,
-                bearing: 0
+                zoom: 11,
+                pitch: 15,
+                bearing: -45
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
@@ -570,15 +553,15 @@ var config = {
         },
         {
             id: 'løsning',
-            alignment: 'center',
+            alignment: 'right',
             hidden: false,
             title: 'Løsningen: ledigparkeringspladsikbh.dk',
-            description: 'Så jeg har selvfølgelig købt domænet "ledigparkeringspladsikbh.dk" som jeg håber snart kan hjælpe de stakkels curlingkøbenhavnere, der klager over at skulle køre rundt i lang tid for at finde en parkeringsplads.<br><br>Målet er at vise hvor mange ledige private pladser der faktisk findes, så vi kan stoppe med at bruge skatteydernes penge på at konkurrere med private tilbud.',
+            description: '<div style="height: 5vh;"></div>Så jeg har selvfølgelig købt domænet "ledigparkeringspladsikbh.dk" som jeg håber snart kan hjælpe de stakkels curlingkøbenhavnere, der klager over at skulle køre rundt i lang tid for at finde en parkeringsplads.<br><br>Målet er at vise hvor mange ledige private pladser der faktisk findes, så vi kan stoppe med at bruge skatteydernes penge på at konkurrere med private tilbud.<br><br><div style="height: 5vh;"></div>',
             location: {
                 center: [12.5683, 55.6761],
-                zoom: 12,
-                pitch: 0,
-                bearing: 0
+                zoom: 13,
+                pitch: 30,
+                bearing: 45
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
