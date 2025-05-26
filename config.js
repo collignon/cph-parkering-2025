@@ -8,7 +8,7 @@ var config = {
     use3dTerrain: false,
     title: 'Private Parkering i København',
     subtitle: 'En visuel undersøgelse af tomme parkeringspladser og offentlige udgifter',
-    byline: 'Af Nico - 2025',
+    byline: '',
     footer: 'Kilder: <a href="https://www.kk.dk/sites/default/files/agenda/4c2ace22-b3ad-4eae-8a00-7fea405ffd51/4d51992b-c2d0-4888-b780-ce0a37b99763-bilag-4_0.pdf">Københavns Kommune</a> | <a href="https://www.kk.dk/borger/parkering-trafik-og-veje/parkering/her-maa-du-parkere-med-din-beboerlicens/find-prisen-paa-din-beboerlicens">Beboerlicens priser</a>',
     chapters: [
         {
